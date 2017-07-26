@@ -9,8 +9,8 @@
   "author": "Steven Li",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^3.5.0",
     "pg": "6.2.4",
-    "promise": "^8.0.0",
     "sequelize": "3.30.4"
   },
   "repository": {

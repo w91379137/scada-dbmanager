@@ -1,6 +1,6 @@
 'use strict';
 
-const Promise = require('promise');
+const Promise = require('bluebird');
 
 const BaseDao = require('./baseDao.js');
 const constant = require('../common/const.js');

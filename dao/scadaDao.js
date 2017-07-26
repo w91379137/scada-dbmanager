@@ -9,6 +9,10 @@ class ScadaDao extends BaseDao {
     this.scadaVo = sequelize.import('../models/scadaVo');
   }
 
+  getScadaData () {
+    return this.scadaVo.findAll();
+  }
+
   getScadaDataById (id) {
     return this.scadaVo.findOne({ where: { scadaId: id } });
   }
