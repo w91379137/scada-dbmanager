@@ -43,6 +43,11 @@ module.exports = function (sequelize, dataTypes) {
       type: dataTypes.INTEGER,
       field: 'scada_type',
       allowNull: false
+    },
+    heartbeat: {
+      type: dataTypes.INTEGER,
+      field: 'heartbeat',
+      allowNull: false
     }
   }, {
     timestamps: false,  // remove createAt and updateAt attributes
