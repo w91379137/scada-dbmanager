@@ -19,18 +19,6 @@ module.exports = function (sequelize, dataTypes) {
       field: 'tag_name',
       allowNull: true
     },
-    dataLog: {
-      type: dataTypes.BOOLEAN,
-      field: 'data_log',
-      allowNull: false,
-      defaultValue: false
-    },
-    readOnly: {
-      type: dataTypes.BOOLEAN,
-      field: 'read_only',
-      allowNull: false,
-      defaultValue: false
-    },
     state0: {
       type: dataTypes.STRING,
       field: 'state_0',
@@ -78,12 +66,6 @@ module.exports = function (sequelize, dataTypes) {
       field: 'state_7',
       allowNull: false,
       defaultValue: ''
-    },
-    arraySize: {
-      type: dataTypes.INTEGER,
-      field: 'array_size',
-      allowNull: false,
-      defaultValue: 0
     }
   }, {
     timestamps: false,  // remove createAt and updateAt attributes
