@@ -9,25 +9,25 @@ class ScadaDao extends BaseDao {
     this.scadaVo = sequelize.import('../models/scadaVo');
   }
 
-  getScadaData () {
+  getScadaList () {
     return this.scadaVo.findAll();
   }
 
-  getScadaDataById (id) {
-    return this.scadaVo.findOne({ where: { scadaId: id } });
+  getScada (scadaId) {
+    return this.scadaVo.findOne({ where: { scadaId } });
   }
 
-  insertScadaData (scada, trans) {
+  insertScada (scada, trans) {
     return this.scadaVo.create(scada, { transaction: trans });
   }
 
-  updateScadaData (scada, id, trans) {
-    return this.scadaVo.update(scada, { where: { scadaId: id } }, { transaction: trans }
+  updateScada (scada, scadaId, trans) {
+    return this.scadaVo.update(scada, { where: { scadaId } }, { transaction: trans }
     );
   }
 
-  deleteScadaData (id, trans) {
-    return this.scadaVo.destroy({ where: { scadaId: id } }, { transaction: trans });
+  deleteScada (scadaId, trans) {
+    return this.scadaVo.destroy({ where: { scadaId } }, { transaction: trans });
   }
 }
 

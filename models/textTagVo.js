@@ -14,7 +14,7 @@ module.exports = function (sequelize, dataTypes) {
       primaryKey: true,
       allowNull: false
     },
-    name: {
+    tagName: {
       type: dataTypes.STRING,
       field: 'tag_name',
       allowNull: true

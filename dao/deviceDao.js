@@ -9,38 +9,36 @@ class DeviceDao extends BaseDao {
     this.deviceVo = sequelize.import('../models/deviceVo');
   }
 
-  getDeviceDataById (scadaId, deviceId) {
+  getDevice (scadaId, deviceId) {
     return this.deviceVo.findOne({
-      where: {
-        scadaId: scadaId,
-        deviceId: deviceId
-      }
+      where: { scadaId, deviceId }
     });
   }
 
-  insertDeviceData (device, t) {
+  getDeviceListByScadaId (scadaId) {
+    return this.deviceVo.findAll({
+      where: { scadaId }
+    });
+  }
+
+  insertDevice (device, t) {
     return this.deviceVo.create(device, { transaction: t });
   }
 
-  updateDeviceData (device, scadaId, deviceId, t) {
+  updateDevice (device, scadaId, deviceId, t) {
     return this.deviceVo.update(
-      device, { where: { scadaId: scadaId, deviceId: deviceId } }, { transaction: t });
+      device, { where: { scadaId, deviceId } }, { transaction: t });
   }
 
-  deleteDeviceData (scadaId, deviceId, t) {
+  deleteDevice (scadaId, deviceId, t) {
     return this.deviceVo.destroy({
-      where: {
-        scadaId: scadaId,
-        deviceId: deviceId
-      }
+      where: { scadaId, deviceId }
     }, { transaction: t });
   }
 
-  deleteDeviceDataByScadaId (scadaId, t) {
+  deleteDeviceListByScadaId (scadaId, t) {
     return this.deviceVo.destroy({
-      where: {
-        scadaId: scadaId
-      }
+      where: { scadaId }
     }, { transaction: t });
   }
 }

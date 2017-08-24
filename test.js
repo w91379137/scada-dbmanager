@@ -19,15 +19,31 @@ let scadaDao = dbmanager.scadaDao;
 let deviceDao = dbmanager.deviceDao;
 let tagDao = dbmanager.tagDao;
 
-scadaDao.getScadaDataById(scada.scadaId)
+scadaDao.getScadaList()
+.then((result) => {
+  console.log(result);
+})
+.catch((error) => {
+  console.error(error);
+});
+
+scadaDao.getScada(scada.scadaId)
   .then((result) => {
-    // console.log(result);
+    console.log(result);
   })
   .catch((error) => {
     console.error(error);
   });
 
-let scadaInfo = {
+tagDao.getTagListByScadaId(scada.scadaId)
+  .then((result) => {
+    console.log(result);
+  })
+  .catch((error) => {
+    console.error(error);
+  });
+
+/* let scadaInfo = {
   scadaId: 'ada43195-7a0a-4903-a533-d333d8c5f9f1',
   name: 'scadafoo',
   description: 'scadafoo',
@@ -59,9 +75,9 @@ let tagInfo = {
 };
 
 dbmanager.conn.transaction(function (trans) {
-  return scadaDao.insertScadaData(scadaInfo, trans).then(function (scada) {
-    return deviceDao.insertDeviceData(deviceInfo, trans).then(function (device) {
-      return tagDao.insertTagData(tagInfo, trans);
+  return scadaDao.insertScada(scadaInfo, trans).then(function (scada) {
+    return deviceDao.insertDevice(deviceInfo, trans).then(function (device) {
+      return tagDao.insertTag(tagInfo, trans);
     });
   });
 })
@@ -70,4 +86,4 @@ dbmanager.conn.transaction(function (trans) {
 })
 .catch(function (err) {
   console.error(err.message);
-});
+}); */

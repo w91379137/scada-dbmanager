@@ -14,7 +14,7 @@ module.exports = function (sequelize, dataTypes) {
       primaryKey: true,
       allowNull: false
     },
-    name: {
+    deviceName: {
       type: dataTypes.STRING,
       field: 'device_name',
       allowNull: false

@@ -8,7 +8,7 @@ module.exports = function (sequelize, dataTypes) {
       primaryKey: true,
       allowNull: false
     },
-    name: {
+    scadaName: {
       type: dataTypes.STRING,
       field: 'scada_name',
       allowNull: false
