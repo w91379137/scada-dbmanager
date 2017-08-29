@@ -6,7 +6,7 @@ scada-dbmanager is a utility of EI-PaaS SCADA for database management.
 
 `npm install scada-dbmanager`
 
-## Initial
+### Initial
 
 ```js
 const DBManager = require('scada-dbmanager');
@@ -17,29 +17,83 @@ let conf = {
   password: '1234',
   database: 'postgres'
 };
-let dbmanager = new DBManager(config);
-let scadaDao = dbmanager.scadaDao;
-let deviceDao = dbmanager.deviceDao;
-let tagDao = dbmanager.tagDao;
+DBManager.init(conf);
 
 ```
 
 ## API
+<a name="DBManager"></a>
+### DBManager
+- `init(postgresConf)`
+- `conn()` get sequelize
+- `ScadaDao`
+- `DeviceDao`
+- `TagDao`
+- `UserDao`
 
 <a name="scadaDao"></a>
-## scadaDao
-
+### scadaDao
+- `getScadaList`
+- `getScada(scadaId)`
+- `insertScada(scadaObj, transaction)`
+- `updateScada(scadaObj, scadaId, transaction)`
+- `deleteScada(scadaId, transaction)`
 * <a href="#scadaDao"><code>scadaDao</b></code></a>
--------------------------------------------------------
 
 <a name="deviceDao"></a>
-## deviceDao
-
+### deviceDao
+- `getDevice(scadaId, deviceId)`
+- `getDeviceListByScadaId(scadaId)`
+- `insertDevice(deviceObj, transaction)`
+- `updateDevice(deviceObj, scadaId, deviceId, transaction)`
+- `deleteDevice(scadaId, deviceId, transaction)`
+- `deleteDeviceListByScadaId(scadaId, transaction)`
 * <a href="#deviceDao"><code>deviceDao</b></code></a>
--------------------------------------------------------
 
 <a name="tagDao"></a>
-## tagDao
-
+### tagDao
+- `getTag(scadaId, deviceId, tagName)`
+- `getTagListByScadaId(scadaId)`
+- `getTagListBydeviceId(scadaId, deviceId)`
+- `getAnalogTag(scadaId, deviceId, tagName)`
+- `getDiscreteTag(scadaId, deviceId, tagName)`
+- `getTextTag(scadaId, deviceId, tagName)`
+- `getAlarmAnalogTag(scadaId, deviceId, tagName)`
+- `getAlarmDiscreteTag(scadaId, deviceId, tagName)`
+- `insertTag(tagObj, transaction)`
+- `insertAnalogTag(tagObj, transaction)`
+- `insertDiscreteTag(tagObj, transaction)`
+- `insertTextTag(tagObj, transaction)`
+- `insertAlarmAnalogTag(tagObj, transaction)`
+- `insertAlarmDiscreteTag(tagObj, transaction)`
+- `updateTag(tagObj, scadaId, deviceId, tagName, transaction)`
+- `updateAnalogTag(tagObj, scadaId, deviceId, tagName, transaction)`
+- `updateDiscreteTag(tagObj, scadaId, deviceId, tagName, transaction)`
+- `updateTextTag(tagObj, scadaId, deviceId, tagName, transaction)`
+- `updateAlarmAnalogTag(tagObj, scadaId, deviceId, tagName, transaction)`
+- `updateAlarmDiscreteTag(tagObj, scadaId, deviceId, tagName, transaction)`
+- `deleteTagListByScadaId(scadaId, transaction)`
+- `deleteTagListByDeviceId(scadaId, deviceId, transaction)`
+- `deleteTag(scadaId, deviceId, tagName, transaction)`
+- `deleteAlarmTag(scadaId, deviceId, tagName, type, transaction)`
 * <a href="#tagDao"><code>tagDao</b></code></a>
--------------------------------------------------------
+
+## Example
+### get scada list
+```
+const DBManager = require('scada-dbmanager');
+let conf = {
+  hostname: '127.0.0.1',
+  port: 5432,
+  username: 'admin',
+  password: '1234',
+  database: 'postgres'
+};
+DBManager.init(conf);
+var scadaDao = DBManager.ScadaDao;
+scadaDao.getScadaList().then((result) => {
+  console.log(result);
+}).catch((error) => {
+  console.error(error);
+});
+```

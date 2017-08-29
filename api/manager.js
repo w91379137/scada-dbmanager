@@ -8,7 +8,37 @@ const TagDao = require('../dao/tagDao.js');
 
 let sequelize = null;
 
-class Manager {
+function _getConn(){
+  return sequelize;
+}
+
+function _init(postgresConf){
+  sequelize = new Sequelize(postgresConf.database, postgresConf.username, postgresConf.password, {
+    host: postgresConf.hostname,
+    dialect: 'postgres',
+    pool: {
+      max: 10,
+      min: 5,
+      idle: 10000
+    },
+    quoteIdentifiers: false,
+    logging: false
+  });
+
+  ScadaDao.init(sequelize);
+  DeviceDao.init(sequelize);
+  TagDao.init(sequelize);
+}
+
+module.exports = {
+  init: _init,
+  conn: _getConn,
+  ScadaDao: ScadaDao,
+  DeviceDao: DeviceDao,
+  TagDao: TagDao
+}
+
+/*class Manager {
   constructor (conf) {
     sequelize = new Sequelize(conf.database, conf.username, conf.password, {
       host: conf.hostname,
@@ -24,6 +54,7 @@ class Manager {
     this.scadaDao = new ScadaDao(sequelize);
     this.deviceDao = new DeviceDao(sequelize);
     this.tagDao = new TagDao(sequelize);
+
     this.conn = sequelize;
   }
 
@@ -34,4 +65,4 @@ class Manager {
   }
 }
 
-module.exports = Manager;
+module.exports = Manager;*/

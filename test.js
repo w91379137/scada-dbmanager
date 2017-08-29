@@ -14,10 +14,9 @@ const scada = {
   scadaId: 'ada43195-7a0a-4903-a533-d333d8c5f9d9'
 };
 
-let dbmanager = new DBManager(psqlConfig);
-let scadaDao = dbmanager.scadaDao;
-let deviceDao = dbmanager.deviceDao;
-let tagDao = dbmanager.tagDao;
+DBManager.init(psqlConfig);
+var scadaDao = DBManager.ScadaDao;
+var tagDao = DBManager.TagDao;
 
 scadaDao.getScadaList()
 .then((result) => {
@@ -42,6 +41,18 @@ tagDao.getTagListByScadaId(scada.scadaId)
   .catch((error) => {
     console.error(error);
   });
+
+
+
+/*DBManager.conn().transaction(function (trans) {
+  return userDao.insertUser(user, trans);
+})
+.then(function (data) {
+  console.log(data);
+})
+.catch(function (err) {
+  console.error(err.message);
+});*/
 
 /* let scadaInfo = {
   scadaId: 'ada43195-7a0a-4903-a533-d333d8c5f9f1',
