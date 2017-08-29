@@ -6,7 +6,7 @@ module.exports = function (sequelize, dataTypes) {
       type: dataTypes.INTEGER,
       field: 'user_id',
       primaryKey: true,
-      allowNull: false
+      autoIncrement: true
     },
     userName: {
       type: dataTypes.STRING(128),
@@ -26,6 +26,11 @@ module.exports = function (sequelize, dataTypes) {
     userDesc: {
       type: dataTypes.STRING(256),
       field: 'user_description',      
+      allowNull: true
+    },
+    createUser: {
+      type: dataTypes.INTEGER,
+      field: 'create_user',
       allowNull: true
     }
   }, {
