@@ -38,7 +38,6 @@ DBManager.init(conf);
 - `insertScada(scadaObj, transaction)`
 - `updateScada(scadaObj, scadaId, transaction)`
 - `deleteScada(scadaId, transaction)`
-* <a href="#scadaDao"><code>scadaDao</b></code></a>
 
 <a name="deviceDao"></a>
 ### deviceDao
@@ -48,7 +47,6 @@ DBManager.init(conf);
 - `updateDevice(deviceObj, scadaId, deviceId, transaction)`
 - `deleteDevice(scadaId, deviceId, transaction)`
 - `deleteDeviceListByScadaId(scadaId, transaction)`
-* <a href="#deviceDao"><code>deviceDao</b></code></a>
 
 <a name="tagDao"></a>
 ### tagDao
@@ -76,7 +74,11 @@ DBManager.init(conf);
 - `deleteTagListByDeviceId(scadaId, deviceId, transaction)`
 - `deleteTag(scadaId, deviceId, tagName, transaction)`
 - `deleteAlarmTag(scadaId, deviceId, tagName, type, transaction)`
-* <a href="#tagDao"><code>tagDao</b></code></a>
+
+<a name="userDao"></a>
+### userDao
+- `getUserList()`
+- `insertUser(userObj, transaction)`
 
 ## Example
 ### get scada list

@@ -42,7 +42,20 @@ tagDao.getTagListByScadaId(scada.scadaId)
     console.error(error);
   });
 
-
+let user = {
+  "userName": "string",
+  "email": "test@advantech.com.tw",
+  "ssoRole": "test",
+  "userDesc": "string"
+}
+var userDao = DBManager.UserDao;
+//userDao.insertUser(user);
+userDao.getUserList().then((result) => {
+  console.log(result);
+})
+.catch((error) => {
+  console.error(error);
+});
 
 /*DBManager.conn().transaction(function (trans) {
   return userDao.insertUser(user, trans);

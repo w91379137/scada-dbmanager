@@ -5,6 +5,7 @@ const Sequelize = require('sequelize');
 const ScadaDao = require('../dao/scadaDao.js');
 const DeviceDao = require('../dao/deviceDao.js');
 const TagDao = require('../dao/tagDao.js');
+const UserDao = require('../dao/userDao.js');
 
 let sequelize = null;
 
@@ -28,6 +29,7 @@ function _init(postgresConf){
   ScadaDao.init(sequelize);
   DeviceDao.init(sequelize);
   TagDao.init(sequelize);
+  UserDao.init(sequelize);
 }
 
 module.exports = {
@@ -35,7 +37,8 @@ module.exports = {
   conn: _getConn,
   ScadaDao: ScadaDao,
   DeviceDao: DeviceDao,
-  TagDao: TagDao
+  TagDao: TagDao,
+  UserDao: UserDao
 }
 
 /*class Manager {
