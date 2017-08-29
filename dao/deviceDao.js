@@ -1,45 +1,34 @@
 'use strict';
 
-const Promise = require('bluebird');
-
 var deviceVo = null;
 
-function _init(sequelize){
-    deviceVo = sequelize.import('../models/deviceVo');
+function _init (sequelize) {
+  deviceVo = sequelize.import('../models/deviceVo');
 }
 
 function _getDevice (scadaId, deviceId) {
-    return deviceVo.findOne({
-      where: { scadaId, deviceId }
-    });
-  }
+  return deviceVo.findOne({where: { scadaId, deviceId }});
+}
 
 function _getDeviceListByScadaId (scadaId) {
-    return deviceVo.findAll({
-      where: { scadaId }
-    });
-  }
+  return deviceVo.findAll({where: { scadaId }});
+}
 
 function _insertDevice (device, t) {
-    return deviceVo.create(device, { transaction: t });
-  }
+  return deviceVo.create(device, { transaction: t });
+}
 
 function _updateDevice (device, scadaId, deviceId, t) {
-    return deviceVo.update(
-      device, { where: { scadaId, deviceId } }, { transaction: t });
-  }
+  return deviceVo.update(device, { where: { scadaId, deviceId } }, { transaction: t });
+}
 
 function _deleteDevice (scadaId, deviceId, t) {
-    return deviceVo.destroy({
-      where: { scadaId, deviceId }
-    }, { transaction: t });
-  }
+  return deviceVo.destroy({where: { scadaId, deviceId }}, { transaction: t });
+}
 
 function _deleteDeviceListByScadaId (scadaId, t) {
-    return deviceVo.destroy({
-      where: { scadaId }
-    }, { transaction: t });
-  }
+  return deviceVo.destroy({where: { scadaId }}, { transaction: t });
+}
 
 module.exports = {
   init: _init,
@@ -50,7 +39,6 @@ module.exports = {
   deleteDevice: _deleteDevice,
   deleteDeviceListByScadaId: _deleteDeviceListByScadaId
 };
-
 
 /* const BaseDao = require('./baseDao.js');
 

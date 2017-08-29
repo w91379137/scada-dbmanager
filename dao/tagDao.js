@@ -11,174 +11,174 @@ var textTagVo = null;
 var alarmAnalogVo = null;
 var alarmDiscreteVo = null;
 
-function _init(sequelize){
-    tagVo = sequelize.import('../models/tagVo');
-    analogTagVo = sequelize.import('../models/analogTagVo');
-    discreteTagVo = sequelize.import('../models/discreteTagVo');
-    textTagVo = sequelize.import('../models/textTagVo');
-    alarmAnalogVo = sequelize.import('../models/alarmAnalogVo');
-    alarmDiscreteVo = sequelize.import('../models/alarmDiscreteVo');
+function _init (sequelize) {
+  tagVo = sequelize.import('../models/tagVo');
+  analogTagVo = sequelize.import('../models/analogTagVo');
+  discreteTagVo = sequelize.import('../models/discreteTagVo');
+  textTagVo = sequelize.import('../models/textTagVo');
+  alarmAnalogVo = sequelize.import('../models/alarmAnalogVo');
+  alarmDiscreteVo = sequelize.import('../models/alarmDiscreteVo');
 }
 
 function _getTag (scadaId, deviceId, tagName) {
-    return tagVo.findOne({
-      where: { scadaId, deviceId, tagName }
-    });
-  }
+  return tagVo.findOne({
+    where: { scadaId, deviceId, tagName }
+  });
+}
 
 function _getTagListByScadaId (scadaId) {
-    return tagVo.findAll({
-      where: { scadaId }
-    });
-  }
+  return tagVo.findAll({
+    where: { scadaId }
+  });
+}
 
 function _getTagListBydeviceId (scadaId, deviceId) {
-    return tagVo.findAll({
-      where: { scadaId, deviceId }
-    });
-  }
+  return tagVo.findAll({
+    where: { scadaId, deviceId }
+  });
+}
 
 function _getAnalogTag (scadaId, deviceId, tagName) {
-    return analogTagVo.findOne({
-      where: { scadaId, deviceId, tagName }
-    });
-  }
+  return analogTagVo.findOne({
+    where: { scadaId, deviceId, tagName }
+  });
+}
 
 function _getDiscreteTag (scadaId, deviceId, tagName) {
-    return discreteTagVo.findOne({
-      where: { scadaId, deviceId, tagName }
-    });
-  }
+  return discreteTagVo.findOne({
+    where: { scadaId, deviceId, tagName }
+  });
+}
 
 function _getTextTag (scadaId, deviceId, tagName) {
-    return textTagVo.findOne({
-      where: { scadaId, deviceId, tagName }
-    });
-  }
+  return textTagVo.findOne({
+    where: { scadaId, deviceId, tagName }
+  });
+}
 
 function _getAlarmAnalogTag (scadaId, deviceId, tagName) {
-    return alarmAnalogVo.findOne({
-      where: { scadaId, deviceId, tagName }
-    });
-  }
+  return alarmAnalogVo.findOne({
+    where: { scadaId, deviceId, tagName }
+  });
+}
 
 function _getAlarmDiscreteTag (scadaId, deviceId, tagName) {
-    return alarmDiscreteVo.findOne({
-      where: { scadaId, deviceId, tagName }
-    });
-  }
+  return alarmDiscreteVo.findOne({
+    where: { scadaId, deviceId, tagName }
+  });
+}
 
 function _insertTag (tag, trans) {
-    return tagVo.create(tag, { transaction: trans });
-  }
+  return tagVo.create(tag, { transaction: trans });
+}
 
 function _insertAnalogTag (tag, trans) {
-    return analogTagVo.create(tag, { transaction: trans });
-  }
+  return analogTagVo.create(tag, { transaction: trans });
+}
 
 function _insertDiscreteTag (tag, trans) {
-    return discreteTagVo.create(tag, { transaction: trans });
-  }
+  return discreteTagVo.create(tag, { transaction: trans });
+}
 
 function _insertTextTag (tag, trans) {
-    return textTagVo.create(tag, { transaction: trans });
-  }
+  return textTagVo.create(tag, { transaction: trans });
+}
 
 function _insertAlarmAnalogTag (tag, trans) {
-    return alarmAnalogVo.create(tag, { transaction: trans });
-  }
+  return alarmAnalogVo.create(tag, { transaction: trans });
+}
 
 function _insertAlarmDiscreteTag (tag, trans) {
-    return alarmDiscreteVo.create(tag, { transaction: trans });
-  }
+  return alarmDiscreteVo.create(tag, { transaction: trans });
+}
 
 function _updateTag (tag, scadaId, deviceId, tagName, trans) {
-    return tagVo.update(
+  return tagVo.update(
       tag, { where: { scadaId, deviceId, tagName } }, { transaction: trans }
     );
-  }
+}
 
 function _updateAnalogTag (tag, scadaId, deviceId, tagName, trans) {
-    return analogTagVo.update(
+  return analogTagVo.update(
       tag, { where: { scadaId, deviceId, tagName } }, { transaction: trans }
     );
-  }
+}
 
 function _updateDiscreteTag (tag, scadaId, deviceId, tagName, trans) {
-    return discreteTagVo.update(
+  return discreteTagVo.update(
       tag, { where: { scadaId, deviceId, tagName } }, { transaction: trans }
     );
-  }
+}
 
 function _updateTextTag (tag, scadaId, deviceId, tagName, trans) {
-    return textTagVo.update(
+  return textTagVo.update(
       tag, { where: { scadaId, deviceId, tagName } }, { transaction: trans }
     );
-  }
+}
 
 function _updateAlarmAnalogTag (tag, scadaId, deviceId, tagName, trans) {
-    return alarmAnalogVo.update(
+  return alarmAnalogVo.update(
       tag, { where: { scadaId, deviceId, tagName } }, { transaction: trans }
     );
-  }
+}
 
 function _updateAlarmDiscreteTag (tag, scadaId, deviceId, tagName, trans) {
-    return alarmDiscreteVo.update(
+  return alarmDiscreteVo.update(
       tag, { where: { scadaId, deviceId, tagName } }, { transaction: trans }
     );
-  }
+}
 
 function _deleteTagListByScadaId (scadaId, trans) {
-    let promises = [];
-    promises.push(tagVo.destroy({ where: { scadaId } }, { transaction: trans }));
-    promises.push(analogTagVo.destroy({ where: { scadaId } }, { transaction: trans }));
-    promises.push(alarmAnalogVo.destroy({ where: { scadaId } }, { transaction: trans }));
-    promises.push(discreteTagVo.destroy({ where: { scadaId } }, { transaction: trans }));
-    promises.push(alarmDiscreteVo.destroy({ where: { scadaId } }, { transaction: trans }));
-    promises.push(textTagVo.destroy({ where: { scadaId } }, { transaction: trans }));
-    return Promise.all(promises);
-  }
+  let promises = [];
+  promises.push(tagVo.destroy({ where: { scadaId } }, { transaction: trans }));
+  promises.push(analogTagVo.destroy({ where: { scadaId } }, { transaction: trans }));
+  promises.push(alarmAnalogVo.destroy({ where: { scadaId } }, { transaction: trans }));
+  promises.push(discreteTagVo.destroy({ where: { scadaId } }, { transaction: trans }));
+  promises.push(alarmDiscreteVo.destroy({ where: { scadaId } }, { transaction: trans }));
+  promises.push(textTagVo.destroy({ where: { scadaId } }, { transaction: trans }));
+  return Promise.all(promises);
+}
 
 function _deleteTagListByDeviceId (scadaId, deviceId, trans) {
-    let promises = [];
-    promises.push(tagVo.destroy({ where: { scadaId, deviceId } }, { transaction: trans }));
-    promises.push(analogTagVo.destroy({ where: { scadaId, deviceId } }, { transaction: trans }));
-    promises.push(alarmAnalogVo.destroy({ where: { scadaId, deviceId } }, { transaction: trans }));
-    promises.push(discreteTagVo.destroy({ where: { scadaId, deviceId } }, { transaction: trans }));
-    promises.push(alarmDiscreteVo.destroy({ where: { scadaId, deviceId } }, { transaction: trans }));
-    promises.push(textTagVo.destroy({ where: { scadaId, deviceId } }, { transaction: trans }));
-    return Promise.all(promises);
-  }
+  let promises = [];
+  promises.push(tagVo.destroy({ where: { scadaId, deviceId } }, { transaction: trans }));
+  promises.push(analogTagVo.destroy({ where: { scadaId, deviceId } }, { transaction: trans }));
+  promises.push(alarmAnalogVo.destroy({ where: { scadaId, deviceId } }, { transaction: trans }));
+  promises.push(discreteTagVo.destroy({ where: { scadaId, deviceId } }, { transaction: trans }));
+  promises.push(alarmDiscreteVo.destroy({ where: { scadaId, deviceId } }, { transaction: trans }));
+  promises.push(textTagVo.destroy({ where: { scadaId, deviceId } }, { transaction: trans }));
+  return Promise.all(promises);
+}
 
 function _deleteTag (scadaId, deviceId, tagName, trans) {
-    let promises = [];
-    promises.push(tagVo.destroy({ where: { scadaId, deviceId, tagName } }, { transaction: trans }));
-    promises.push(analogTagVo.destroy({ where: { scadaId, deviceId, tagName } }, { transaction: trans }));
-    promises.push(alarmAnalogVo.destroy({ where: { scadaId, deviceId, tagName } }, { transaction: trans }));
-    promises.push(discreteTagVo.destroy({ where: { scadaId, deviceId, tagName } }, { transaction: trans }));
-    promises.push(alarmDiscreteVo.destroy({ where: { scadaId, deviceId, tagName } }, { transaction: trans }));
-    promises.push(textTagVo.destroy({ where: { scadaId, deviceId, tagName } }, { transaction: trans }));
-    return Promise.all(promises);
-  }
+  let promises = [];
+  promises.push(tagVo.destroy({ where: { scadaId, deviceId, tagName } }, { transaction: trans }));
+  promises.push(analogTagVo.destroy({ where: { scadaId, deviceId, tagName } }, { transaction: trans }));
+  promises.push(alarmAnalogVo.destroy({ where: { scadaId, deviceId, tagName } }, { transaction: trans }));
+  promises.push(discreteTagVo.destroy({ where: { scadaId, deviceId, tagName } }, { transaction: trans }));
+  promises.push(alarmDiscreteVo.destroy({ where: { scadaId, deviceId, tagName } }, { transaction: trans }));
+  promises.push(textTagVo.destroy({ where: { scadaId, deviceId, tagName } }, { transaction: trans }));
+  return Promise.all(promises);
+}
 
 function _deleteAlarmTag (scadaId, deviceId, tagName, type, trans) {
-    let promises = [];
-    promises.push(tagDao.getTag(scadaId, deviceId, tagName));
-    switch (type) {
-      case constant.tagType.analog:
-        promises.push(alarmAnalogVo.destroy({
-          where: { scadaId, deviceId, tagName }
-        }, { transaction: trans }));
-        break;
-      case constant.tagType.discrete:
-        promises.push(alarmDiscreteVo.destroy({
-          where: { scadaId, deviceId, tagName }
-        }, { transaction: trans }));
-        break;
-    }
-
-    return Promise.all(promises);
+  let promises = [];
+  promises.push(_getTag(scadaId, deviceId, tagName));
+  switch (type) {
+    case constant.tagType.analog:
+      promises.push(alarmAnalogVo.destroy({
+        where: { scadaId, deviceId, tagName }
+      }, { transaction: trans }));
+      break;
+    case constant.tagType.discrete:
+      promises.push(alarmDiscreteVo.destroy({
+        where: { scadaId, deviceId, tagName }
+      }, { transaction: trans }));
+      break;
   }
+
+  return Promise.all(promises);
+}
 
 module.exports = {
   init: _init,

@@ -1,33 +1,30 @@
 'use strict';
 
-const Promise = require('bluebird');
-
 var scadaVo = null;
 
-function _init(sequelize){
-    scadaVo = sequelize.import('../models/scadaVo');
+function _init (sequelize) {
+  scadaVo = sequelize.import('../models/scadaVo');
 }
 
 function _getScadaList () {
-    return scadaVo.findAll();
-  }
+  return scadaVo.findAll();
+}
 
 function _getScada (scadaId) {
-    return scadaVo.findOne({ where: { scadaId } });
-  }
+  return scadaVo.findOne({ where: { scadaId } });
+}
 
 function _insertScada (scada, trans) {
-    return scadaVo.create(scada, { transaction: trans });
-  }
+  return scadaVo.create(scada, { transaction: trans });
+}
 
 function _updateScada (scada, scadaId, trans) {
-    return scadaVo.update(scada, { where: { scadaId } }, { transaction: trans }
-    );
-  }
+  return scadaVo.update(scada, { where: { scadaId } }, { transaction: trans });
+}
 
 function _deleteScada (scadaId, trans) {
-    return scadaVo.destroy({ where: { scadaId } }, { transaction: trans });
-  }
+  return scadaVo.destroy({ where: { scadaId } }, { transaction: trans });
+}
 
 module.exports = {
   init: _init,
@@ -36,7 +33,7 @@ module.exports = {
   insertScada: _insertScada,
   updateScada: _updateScada,
   deleteScada: _deleteScada
-}
+};
 
 /* const BaseDao = require('./baseDao.js');
 
