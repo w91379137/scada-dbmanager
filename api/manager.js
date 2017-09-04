@@ -6,14 +6,15 @@ const ScadaDao = require('../dao/scadaDao.js');
 const DeviceDao = require('../dao/deviceDao.js');
 const TagDao = require('../dao/tagDao.js');
 const UserDao = require('../dao/userDao.js');
+const ScopeDao = require('../dao/scopeDao.js');
 
 let sequelize = null;
 
-function _getConn(){
+function _getConn () {
   return sequelize;
 }
 
-function _init(postgresConf){
+function _init (postgresConf) {
   sequelize = new Sequelize(postgresConf.database, postgresConf.username, postgresConf.password, {
     host: postgresConf.hostname,
     dialect: 'postgres',
@@ -30,6 +31,7 @@ function _init(postgresConf){
   DeviceDao.init(sequelize);
   TagDao.init(sequelize);
   UserDao.init(sequelize);
+  ScopeDao.init(sequelize);
 }
 
 module.exports = {
@@ -38,10 +40,11 @@ module.exports = {
   ScadaDao: ScadaDao,
   DeviceDao: DeviceDao,
   TagDao: TagDao,
-  UserDao: UserDao
-}
+  UserDao: UserDao,
+  ScopeDao: ScopeDao
+};
 
-/*class Manager {
+/* class Manager {
   constructor (conf) {
     sequelize = new Sequelize(conf.database, conf.username, conf.password, {
       host: conf.hostname,
@@ -68,4 +71,4 @@ module.exports = {
   }
 }
 
-module.exports = Manager;*/
+module.exports = Manager; */

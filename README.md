@@ -78,11 +78,20 @@ DBManager.init(conf);
 <a name="userDao"></a>
 ### userDao
 - `getUserList()`
-- `insertUser(userObj, transaction)`
+- `getUserById(userId)`
+- `getUserByName(userName)`
+- `getUserScopeById(userId)`
+- `insertUser(userObj, trans)`
+- `insertUserScopeById(userId, scopeList, trans)`
+- `updateUserByName(userName, userObj, trans)`
+- `updateUserScopeByName(userName, scopeList, trans)`
+- `updateUserScopeById(userId, scopeList, trans)`
+- `deleteUserById(userId, trans)`
+- `deleteUserScope(userId, trans)`
 
 ## Example
 ### get scada list
-```
+```js
 const DBManager = require('scada-dbmanager');
 let conf = {
   hostname: '127.0.0.1',
@@ -98,4 +107,5 @@ scadaDao.getScadaList().then((result) => {
 }).catch((error) => {
   console.error(error);
 });
+
 ```

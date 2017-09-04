@@ -16,16 +16,16 @@ module.exports = function (sequelize, dataTypes) {
     email: {
       type: dataTypes.STRING(256),
       field: 'email',
-      allowNull: false
+      allowNull: true
     },
     ssoRole: {
       type: dataTypes.STRING(32),
-      field: 'sso_role',      
+      field: 'sso_role',
       allowNull: false
     },
     userDesc: {
       type: dataTypes.STRING(256),
-      field: 'user_description',      
+      field: 'user_description',
       allowNull: true
     },
     createUser: {

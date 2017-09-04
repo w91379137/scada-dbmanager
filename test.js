@@ -17,8 +17,10 @@ const scada = {
 DBManager.init(psqlConfig);
 var scadaDao = DBManager.ScadaDao;
 var tagDao = DBManager.TagDao;
+var userDao = DBManager.UserDao;
+var scopeDao = DBManager.ScopeDao;
 
-scadaDao.getScadaList()
+/*scadaDao.getScadaList()
 .then((result) => {
   console.log(result);
 })
@@ -41,21 +43,65 @@ tagDao.getTagListByScadaId(scada.scadaId)
   .catch((error) => {
     console.error(error);
   });
-
+*/
 let user = {
-  "userName": "string",
+  "userName": "string87",
   "email": "test@advantech.com.tw",
   "ssoRole": "test",
   "userDesc": "string"
 }
-var userDao = DBManager.UserDao;
-//userDao.insertUser(user);
-userDao.getUserList().then((result) => {
+
+userDao.updateUserByName(user.userName, {scope: ['吃大便']}).then((result) => {
   console.log(result);
 })
 .catch((error) => {
   console.error(error);
 });
+
+
+/* scopeDao.insertScope({scopeName: '吃大便'}).then((result) => {
+  console.log("here");
+  console.log(result);
+})
+.catch((error) => {
+  console.error(error);
+}); */
+
+/* DBManager.conn().transaction(function (trans) {
+  return userDao.insertUser(user, trans);
+}).then(function (data) {
+  console.log(data);
+}).catch(function (err) {
+  console.error(err.message);
+}); */
+
+/*DBManager.conn().transaction(function (trans) {
+  return userDao.insertUserScope(1, ['test'], trans);
+}).then(function (data) {
+  console.log(data);
+}).catch(function (err) {
+  console.error(err.message);
+});*/
+
+/* userDao.getUserList().then((result) => {
+  console.log(result);
+})
+.catch((error) => {
+  console.error(error);
+}); */
+
+/*scopeDao.insertScope({scopeName: 'test'}).then(function (data) {
+  console.log(data);
+})
+.catch(function (err) {
+  console.error(err.message);
+});*/
+/*userDao.insertUserScope(3, [3]).then(function (data) {
+  console.log(data);
+})
+.catch(function (err) {
+  console.error(err.message);
+});*/
 
 /*DBManager.conn().transaction(function (trans) {
   return userDao.insertUser(user, trans);
@@ -66,6 +112,8 @@ userDao.getUserList().then((result) => {
 .catch(function (err) {
   console.error(err.message);
 });*/
+
+
 
 /* let scadaInfo = {
   scadaId: 'ada43195-7a0a-4903-a533-d333d8c5f9f1',
