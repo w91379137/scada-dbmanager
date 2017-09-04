@@ -89,6 +89,15 @@ DBManager.init(conf);
 - `deleteUserById(userId, trans)`
 - `deleteUserScope(userId, trans)`
 
+<a name="roleDao"></a>
+### roleDao
+- `insertRole(roleObj, trans)`
+- `insertRoleScope(roleId, scopeList, trans)`
+- `updateRole(roleId, roleObj, trans)`
+- `updateRoleScope(roleId, scopeList, trans)`
+- `deleteRole(roleId, trans)`
+- `deleteRoleScope(roleId, trans)`
+
 ## Example
 ### get scada list
 ```js
