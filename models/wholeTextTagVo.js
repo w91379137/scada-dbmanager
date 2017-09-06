@@ -1,7 +1,11 @@
 'use strict';
 
+/**
+ * tagList join tag_text
+ */
+
 module.exports = function (sequelize, dataTypes) {
-  return sequelize.define('tag_analog', {
+  return sequelize.define('whole_analog_tag', {
     scadaId: {
       type: dataTypes.STRING,
       field: 'scada_id',
@@ -20,39 +24,40 @@ module.exports = function (sequelize, dataTypes) {
       primaryKey: true,
       allowNull: false
     },
-    engUnit: {
+    description: {
       type: dataTypes.STRING,
-      field: 'eng_unit',
+      field: 'tag_description',
       allowNull: false,
       defaultValue: ''
     },
-    spanHigh: {
-      type: dataTypes.DOUBLE,
-      field: 'span_high',
+    alarmStatus: {
+      type: dataTypes.BOOLEAN,
+      field: 'alarm_status',
       allowNull: false,
-      defaultValue: 100
+      defaultValue: false
     },
-    spanLow: {
-      type: dataTypes.DOUBLE,
-      field: 'span_low',
+    type: {
+      type: dataTypes.INTEGER,
+      field: 'tag_type',
+      allowNull: false
+    },
+    arraySize: {
+      type: dataTypes.INTEGER,
+      field: 'array_size',
       allowNull: false,
       defaultValue: 0
     },
-    intDspFmt: {
-      type: dataTypes.INTEGER,
-      field: 'int_dsp_fmt',
+    dataLog: {
+      type: dataTypes.BOOLEAN,
+      field: 'data_log',
       allowNull: false,
-      defaultValue: 4
+      defaultValue: false
     },
-    fraDspFmt: {
-      type: dataTypes.INTEGER,
-      field: 'fra_dsp_fmt',
+    readOnly: {
+      type: dataTypes.BOOLEAN,
+      field: 'read_only',
       allowNull: false,
-      defaultValue: 2
+      defaultValue: false
     }
-  }, {
-    timestamps: false,  // remove createAt and updateAt attributes
-    freezeTableName: false, // Model tableName will be the same as the model name
-    tableName: 'scada.tag_analog'
   });
 };

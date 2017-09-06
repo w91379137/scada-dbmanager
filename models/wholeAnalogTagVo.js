@@ -1,7 +1,11 @@
 'use strict';
 
+/**
+ * tagList join tag_analog
+ */
+
 module.exports = function (sequelize, dataTypes) {
-  return sequelize.define('tag_analog', {
+  return sequelize.define('whole_analog_tag', {
     scadaId: {
       type: dataTypes.STRING,
       field: 'scada_id',
@@ -19,6 +23,41 @@ module.exports = function (sequelize, dataTypes) {
       field: 'tag_name',
       primaryKey: true,
       allowNull: false
+    },
+    description: {
+      type: dataTypes.STRING,
+      field: 'tag_description',
+      allowNull: false,
+      defaultValue: ''
+    },
+    alarmStatus: {
+      type: dataTypes.BOOLEAN,
+      field: 'alarm_status',
+      allowNull: false,
+      defaultValue: false
+    },
+    type: {
+      type: dataTypes.INTEGER,
+      field: 'tag_type',
+      allowNull: false
+    },
+    arraySize: {
+      type: dataTypes.INTEGER,
+      field: 'array_size',
+      allowNull: false,
+      defaultValue: 0
+    },
+    dataLog: {
+      type: dataTypes.BOOLEAN,
+      field: 'data_log',
+      allowNull: false,
+      defaultValue: false
+    },
+    readOnly: {
+      type: dataTypes.BOOLEAN,
+      field: 'read_only',
+      allowNull: false,
+      defaultValue: false
     },
     engUnit: {
       type: dataTypes.STRING,
@@ -50,9 +89,5 @@ module.exports = function (sequelize, dataTypes) {
       allowNull: false,
       defaultValue: 2
     }
-  }, {
-    timestamps: false,  // remove createAt and updateAt attributes
-    freezeTableName: false, // Model tableName will be the same as the model name
-    tableName: 'scada.tag_analog'
   });
 };

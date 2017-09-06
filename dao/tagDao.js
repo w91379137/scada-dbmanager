@@ -11,6 +11,12 @@ var textTagVo = null;
 var alarmAnalogVo = null;
 var alarmDiscreteVo = null;
 
+var wholeAnalogTagVo = null;
+var wholeDiscreteTagVo = null;
+var wholeTextTagVo = null;
+
+var _sequelize = null;
+
 function _init (sequelize) {
   tagVo = sequelize.import('../models/tagVo');
   analogTagVo = sequelize.import('../models/analogTagVo');
@@ -18,6 +24,66 @@ function _init (sequelize) {
   textTagVo = sequelize.import('../models/textTagVo');
   alarmAnalogVo = sequelize.import('../models/alarmAnalogVo');
   alarmDiscreteVo = sequelize.import('../models/alarmDiscreteVo');
+
+  wholeAnalogTagVo = sequelize.import('../models/wholeAnalogTagVo');
+  wholeDiscreteTagVo = sequelize.import('../models/wholeDiscreteTagVo');
+  wholeTextTagVo = sequelize.import('../models/wholeTextTagVo');
+
+  _sequelize = sequelize;
+
+  // tagVo.belongsTo(analogTagVo, { foreignKey: 'scadaId' });
+  // analogTagVo.belongsTo(tagVo, { foreignKey: 'scadaId' });
+}
+
+function __getAnalogTagListByScadaId (scadaId) {
+  let sql =
+    'SELECT tag_list.scada_id AS scadaId, tag_list.device_id AS deviceId, tag_list.tag_name AS tagName, tag_list.tag_description AS description, ' +
+    'tag_list.alarm_status AS alarmStatus, tag_list.tag_type AS tagType, tag_list.array_size AS arraySize, tag_list.data_log AS dataLog, ' +
+    'tag_list.read_only AS readOnly, tag_analog.eng_unit AS engUnit, tag_analog.span_high AS spanHigh, tag_analog.span_low AS spanLow, ' +
+    'tag_analog.int_dsp_fmt AS intDspFmt, tag_analog.fra_dsp_fmt AS fraDspFmt FROM scada.tag_list AS tag_list INNER JOIN scada.tag_analog AS tag_analog ON ' +
+    'tag_list.scada_id = tag_analog.scada_id AND tag_list.device_id = tag_analog.device_id AND tag_list.tag_name = tag_analog.tag_name ' +
+    'WHERE tag_list.scada_id = $scadaId';
+
+  return _sequelize.query(sql, { bind: { scadaId: scadaId }, type: _sequelize.QueryTypes.SELECT, model: wholeAnalogTagVo });
+
+  /* return tagVo.findAll({
+    include: [{
+      model: analogTagVo,
+      as: 'tag_analog',
+      required: true,
+      on: {
+        col1: _sequelize.where(_sequelize.col('tag_list.scada_id'), '=', _sequelize.col('tag_analog.scada_id')),
+        col2: _sequelize.where(_sequelize.col('tag_list.device_id'), '=', _sequelize.col('tag_analog.device_id')),
+        col3: _sequelize.where(_sequelize.col('tag_list.tag_name'), '=', _sequelize.col('tag_analog.tag_name'))
+      }
+    }
+    ],
+    where: { scadaId }
+  }); */
+}
+
+function __getDiscreteTagListByScadaId (scadaId) {
+  let sql =
+      'SELECT tag_list.scada_id AS scadaId, tag_list.device_id AS deviceId, tag_list.tag_name AS tagName, tag_list.tag_description AS description, ' +
+      'tag_list.alarm_status AS alarmStatus, tag_list.tag_type AS tagType, tag_list.array_size AS arraySize, tag_list.data_log AS dataLog, ' +
+      'tag_list.read_only AS readOnly, tag_discrete.state_0 AS state0, tag_discrete.state_1 AS state1, tag_discrete.state_2 AS state2, ' +
+      'tag_discrete.state_3 AS state3, tag_discrete.state_4 AS state4, tag_discrete.state_5 AS state5, tag_discrete.state_6 AS state6, ' +
+      'tag_discrete.state_7 AS state7 FROM scada.tag_list AS tag_list INNER JOIN scada.tag_discrete AS tag_discrete ON ' +
+      'tag_list.scada_id = tag_discrete.scada_id AND tag_list.device_id = tag_discrete.device_id AND tag_list.tag_name = tag_discrete.tag_name ' +
+      'WHERE tag_list.scada_id = $scadaId';
+
+  return _sequelize.query(sql, { bind: { scadaId: scadaId }, type: _sequelize.QueryTypes.SELECT, model: wholeDiscreteTagVo });
+}
+
+function __getTextTagListByScadaId (scadaId) {
+  let sql =
+    'SELECT tag_list.scada_id AS scadaId, tag_list.device_id AS deviceId, tag_list.tag_name AS tagName, tag_list.tag_description AS description, ' +
+    'tag_list.alarm_status AS alarmStatus, tag_list.tag_type AS tagType, tag_list.array_size AS arraySize, tag_list.data_log AS dataLog, ' +
+    'tag_list.read_only AS readOnly FROM scada.tag_list AS tag_list INNER JOIN scada.tag_text AS tag_text ON ' +
+    'tag_list.scada_id = tag_text.scada_id AND tag_list.device_id = tag_text.device_id AND tag_list.tag_name = tag_text.tag_name ' +
+    'WHERE tag_list.scada_id = $scadaId';
+
+  return _sequelize.query(sql, { bind: { scadaId: scadaId }, type: _sequelize.QueryTypes.SELECT, model: wholeTextTagVo });
 }
 
 function _getTag (scadaId, deviceId, tagName) {
@@ -29,6 +95,26 @@ function _getTag (scadaId, deviceId, tagName) {
 function _getTagListByScadaId (scadaId) {
   return tagVo.findAll({
     where: { scadaId }
+  });
+}
+
+function _getWholeTagListByScadaId (scadaId) {
+  return new Promise((resolve, reject) => {
+    let output = {};
+    let promise = [];
+    promise.push(__getAnalogTagListByScadaId(scadaId));
+    promise.push(__getDiscreteTagListByScadaId(scadaId));
+    promise.push(__getTextTagListByScadaId(scadaId));
+    Promise.all(promise)
+      .then((results) => {
+        output.analogTagList = results[0];
+        output.discreteTagList = results[1];
+        output.textTagList = results[2];
+        resolve(output);
+      })
+      .catch((error) => {
+        reject(error);
+      });
   });
 }
 
@@ -184,6 +270,7 @@ module.exports = {
   init: _init,
   getTag: _getTag,
   getTagListByScadaId: _getTagListByScadaId,
+  getWholeTagListByScadaId: _getWholeTagListByScadaId,
   getTagListBydeviceId: _getTagListBydeviceId,
   getAnalogTag: _getAnalogTag,
   getDiscreteTag: _getDiscreteTag,
