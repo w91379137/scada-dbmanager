@@ -70,7 +70,7 @@ function _updateRoleScope (roleId, scopeList, trans) {
             reject(new Error(scopeList[idx] + ' is not exist'));
           }
           if (array.indexOf(scopeList[idx]) === -1) {
-            array.push({userId: user.userId, scopeId: scopeList[idx]});
+            array.push({roleId: roleId, scopeId: scopeList[idx]});
           }
         }
         roleScopeVo.destroy({where: {roleId}}, { transaction: trans }).then(function (c) {
