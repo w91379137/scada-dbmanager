@@ -1,6 +1,6 @@
 {
   "name": "scada-dbmanager",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "scada-dbmanager is a utility of EI-PaaS SCADA for database management.",
   "main": "index.js",
   "scripts": {
@@ -9,8 +9,8 @@
   "author": "Steven Li",
   "license": "ISC",
   "dependencies": {
-    "bluebird": "^3.5.0",
-    "pg": "6.2.4",
+    "bluebird": "3.5.0",
+    "pg": "6.4.2",
     "sequelize": "3.30.4"
   },
   "repository": {
