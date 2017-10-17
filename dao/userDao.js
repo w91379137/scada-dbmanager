@@ -47,12 +47,14 @@ function _insertUserScopeById (userId, scopeList, trans) {
   return new Promise((resolve, reject) => {
     scopeVo.findAll().then(function (scopes) {
       scopes = scopes.map((o) => o.scopeId);
-      for (let idx = 0; idx < scopeList.length; idx++) {
-        if (scopes.indexOf(scopeList[idx]) === -1) {
-          return reject(new Error(scopeList[idx] + ' is not exist'));
-        }
-        if (array.indexOf(scopeList[idx]) === -1) {
-          array.push({ userId: userId, scopeId: scopeList[idx] });
+      if(scopeList){
+        for (let idx = 0; idx < scopeList.length; idx++) {
+          if (scopes.indexOf(scopeList[idx]) === -1) {
+            return reject(new Error(scopeList[idx] + ' is not exist'));
+          }
+          if (array.indexOf(scopeList[idx]) === -1) {
+            array.push({ userId: userId, scopeId: scopeList[idx] });
+          }
         }
       }
       resolve(userScopeVo.bulkCreate(array, { transaction: trans }));
@@ -81,7 +83,7 @@ function _updateUserScopeByName (userName, scopeList, trans) {
       let array = [];
       scopeVo.findAll().then(function (scopes) {
         scopes = scopes.map((o) => o.scopeId);
-        for (let idx in scopeList) {
+        for (let idx = 0; idx < scopeList.length; idx++) {
           if (scopes.indexOf(scopeList[idx]) === -1) {
             reject(new Error(scopeList[idx] + ' is not exist'));
           }
@@ -105,7 +107,7 @@ function _updateUserScopeById (userId, scopeList, trans) {
     let array = [];
     scopeVo.findAll().then(function (scopes) {
       scopes = scopes.map((o) => o.scopeId);
-      for (let idx in scopeList) {
+      for (let idx = 0; idx < scopeList.length; idx++) {
         if (scopes.indexOf(scopeList[idx]) === -1) {
           reject(new Error(scopeList[idx] + ' is not exist'));
         }

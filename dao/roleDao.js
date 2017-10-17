@@ -65,7 +65,7 @@ function _updateRoleScope (roleId, scopeList, trans) {
       let array = [];
       scopeVo.findAll().then(function (scopes) {
         scopes = scopes.map((o) => o.scopeId);
-        for (let idx in scopeList) {
+        for (let idx = 0; idx < scopeList.length; idx++) {
           if (scopes.indexOf(scopeList[idx]) === -1) {
             reject(new Error(scopeList[idx] + ' is not exist'));
           }
