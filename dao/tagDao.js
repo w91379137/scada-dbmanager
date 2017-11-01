@@ -87,9 +87,45 @@ function __getTextTagListByScadaId (scadaId) {
 }
 
 function _getTag (scadaId, deviceId, tagName) {
-  return tagVo.findOne({
-    where: { scadaId, deviceId, tagName }
+  return new Promise((resolve, reject) => {
+    tagVo.findOne({where: { scadaId, deviceId, tagName }}).then(function (obj) {
+      if (!obj) {
+        resolve(obj);
+      }
+      let Vo = null;
+      switch (parseInt(obj.type)) {
+        case constant.tagType.analog:
+          Vo = analogTagVo;
+          break;
+        case constant.tagType.discrete:
+          Vo = discreteTagVo;
+          break;
+        case constant.tagType.text:
+          Vo = discreteTagVo;
+          break;
+      }
+      if (Vo) {
+        Vo.findOne({where: { scadaId, deviceId, tagName }}).then(function (info) {
+          if (info) {
+            resolve(Object.assign(obj.dataValues, info.dataValues));
+          } else {
+            resolve(obj);
+          }
+        });
+      } else {
+        resolve(obj);
+      }
+    }).catch(function (err) {
+      reject(err);
+    });
   });
+
+  /* let sql = 'SELECT * FROM scada.tag_list AS tag_list ' +
+  'LEFT OUTER JOIN scada.tag_text AS tag_text ON tag_list.scada_id = tag_text.scada_id AND tag_list.device_id = tag_text.device_id AND tag_list.tag_name = tag_text.tag_name ' +
+  'LEFT OUTER JOIN scada.tag_discrete AS tag_discrete ON tag_list.scada_id = tag_discrete.scada_id AND tag_list.device_id = tag_discrete.device_id AND tag_list.tag_name = tag_discrete.tag_name ' +
+  'LEFT OUTER JOIN scada.tag_analog AS tag_analog ON tag_list.scada_id = tag_analog.scada_id AND tag_list.device_id = tag_analog.device_id AND tag_list.tag_name = tag_analog.tag_name ' +
+  'WHERE tag_list.scada_id = $scadaId AND tag_list.device_id = $deviceId AND tag_list.tag_name = $tagName';
+  return _sequelize.query(sql, { bind: { scadaId: scadaId, deviceId: deviceId, tagName: tagName }, type: _sequelize.QueryTypes.SELECT }); */
 }
 
 function _getTagListByScadaId (scadaId) {
