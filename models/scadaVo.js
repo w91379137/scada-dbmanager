@@ -2,6 +2,11 @@
 
 module.exports = function (sequelize, dataTypes) {
   return sequelize.define('scada_list', {
+    projectId: {
+      type: dataTypes.STRING(32),
+      field: 'proj_id',
+      allowNull: true
+    },
     scadaId: {
       type: dataTypes.STRING,
       field: 'scada_id',
@@ -11,7 +16,8 @@ module.exports = function (sequelize, dataTypes) {
     scadaName: {
       type: dataTypes.STRING,
       field: 'scada_name',
-      allowNull: false
+      allowNull: false,
+      defaultValue: ''
     },
     description: {
       type: dataTypes.STRING,
@@ -22,12 +28,14 @@ module.exports = function (sequelize, dataTypes) {
     primaryIP: {
       type: dataTypes.STRING,
       field: 'primary_scada_ip',
-      allowNull: false
+      allowNull: false,
+      defaultValue: ''
     },
     primaryPort: {
       type: dataTypes.INTEGER,
       field: 'primary_scada_port',
-      allowNull: false
+      allowNull: false,
+      defaultValue: 0
     },
     backupIP: {
       type: dataTypes.STRING,
@@ -42,12 +50,14 @@ module.exports = function (sequelize, dataTypes) {
     type: {
       type: dataTypes.INTEGER,
       field: 'scada_type',
-      allowNull: false
+      allowNull: false,
+      defaultValue: 0
     },
     heartbeat: {
       type: dataTypes.INTEGER,
       field: 'heartbeat',
-      allowNull: false
+      allowNull: false,
+      defaultValue: 0
     }
   }, {
     timestamps: false,  // remove createAt and updateAt attributes

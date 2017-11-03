@@ -2,6 +2,7 @@
 
 const Sequelize = require('sequelize');
 
+const ProjectDao = require('../dao/projectDao.js');
 const ScadaDao = require('../dao/scadaDao.js');
 const DeviceDao = require('../dao/deviceDao.js');
 const TagDao = require('../dao/tagDao.js');
@@ -25,9 +26,10 @@ function _init (postgresConf) {
       idle: 10000
     },
     quoteIdentifiers: false,
-    logging: false
+    logging: true
   });
 
+  ProjectDao.init(sequelize);
   ScadaDao.init(sequelize);
   DeviceDao.init(sequelize);
   TagDao.init(sequelize);
@@ -39,6 +41,7 @@ function _init (postgresConf) {
 module.exports = {
   init: _init,
   conn: _getConn,
+  ProjectDao: ProjectDao,
   ScadaDao: ScadaDao,
   DeviceDao: DeviceDao,
   TagDao: TagDao,
