@@ -1,5 +1,8 @@
 'use strict';
 
+const Sequelize = require('sequelize');
+const Utils = require('../common/utils');
+
 var scadaVo = null;
 
 function _init (sequelize) {
@@ -8,6 +11,33 @@ function _init (sequelize) {
 
 function _getScadaList () {
   return scadaVo.findAll();
+}
+
+/**
+ * @param {String} projectId: projectId
+ * @param {Object} params
+ * @param {Integer} params.offset: starting index
+ * @param {Integer} params.limit: data retrived
+ * @param {String} params.scadaName: filter project name
+ * @param {String} params.scadaDesc: filter project desc
+ * @param {String} params.sortby: sort properties
+ * @param {String} params.order: order asc or desc
+ */
+function _getScadaListByProjectId (projectId, params) {
+  let props = Object.keys(scadaVo.attributes);
+  let where = { projectId };
+  for (let idx in props) {
+    let key = props[idx];
+    if (!Utils.isNullOrUndefined(params[key])) {
+      where[key] = { $like: params[key] };
+    }
+  }
+  let filter = {};
+  filter.offset = !Utils.isNullOrUndefined(params.offset) ? params.offset : null;
+  filter.limit = !Utils.isNullOrUndefined(params.limit) ? params.limit : null;
+  filter.order = !Utils.isNullOrUndefined(params.sortby) && !Utils.isNullOrUndefined(params.order) ? Sequelize.literal(params.sortby + ' ' + params.order) : null;
+  filter.where = where;
+  return scadaVo.findAndCountAll(filter);
 }
 
 function _getScada (scadaId) {
@@ -29,6 +59,7 @@ function _deleteScada (scadaId, trans) {
 module.exports = {
   init: _init,
   getScadaList: _getScadaList,
+  getScadaListByProjectId: _getScadaListByProjectId,
   getScada: _getScada,
   insertScada: _insertScada,
   updateScada: _updateScada,

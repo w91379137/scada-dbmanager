@@ -19,6 +19,22 @@ var scadaDao = DBManager.ScadaDao;
 var tagDao = DBManager.TagDao;
 var userDao = DBManager.UserDao;
 var scopeDao = DBManager.ScopeDao;
+var projectDao = DBManager.ProjectDao;
+
+tagDao.getTag("16d89eef-0980-481e-ac3f-42457d40c6ce", "P01_WAMQTT2", "WAMQTT2_TXT02").then((result) => {
+  console.log(result);
+})
+.catch((error) => {
+  console.error(error);
+});
+
+/* projectDao.getProject('test')
+.then((result) => {
+  console.log(result);
+})
+.catch((error) => {
+  console.error(error);
+}); */
 
 /* scadaDao.getScadaList()
 .then((result) => {
@@ -36,7 +52,7 @@ scadaDao.getScada(scada.scadaId)
     console.error(error);
   }); */
 
-tagDao.getTagListByScadaId(scada.scadaId)
+/*tagDao.getTagListByScadaId(scada.scadaId)
   .then((result) => {
     console.log(result);
   })
