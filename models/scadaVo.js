@@ -19,35 +19,35 @@ module.exports = function (sequelize, dataTypes) {
       allowNull: false,
       defaultValue: ''
     },
-    description: {
+    scadaDesc: {
       type: dataTypes.STRING,
       field: 'scada_description',
       allowNull: false,
       defaultValue: ''
     },
-    primaryIP: {
+    primaryScadaIP: {
       type: dataTypes.STRING,
       field: 'primary_scada_ip',
       allowNull: false,
       defaultValue: ''
     },
-    primaryPort: {
+    primaryScadaPort: {
       type: dataTypes.INTEGER,
       field: 'primary_scada_port',
       allowNull: false,
       defaultValue: 0
     },
-    backupIP: {
+    backupScadaIP: {
       type: dataTypes.STRING,
       field: 'backup_scada_ip',
       allowNull: true
     },
-    backupPort: {
+    backupScadaPort: {
       type: dataTypes.INTEGER,
       field: 'backup_scada_port',
       allowNull: true
     },
-    type: {
+    scadaType: {
       type: dataTypes.INTEGER,
       field: 'scada_type',
       allowNull: false,

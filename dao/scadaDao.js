@@ -40,8 +40,8 @@ function _getScadaListByProjectId (projectId, params) {
   return scadaVo.findAndCountAll(filter);
 }
 
-function _getScada (scadaId) {
-  return scadaVo.findOne({ where: { scadaId } });
+function _getScada (projectId, scadaId) {
+  return scadaVo.findOne({ where: { projectId, scadaId } });
 }
 
 function _insertScada (scada, trans) {
