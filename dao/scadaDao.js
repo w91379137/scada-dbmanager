@@ -1,5 +1,6 @@
 'use strict';
 
+const Promise = require('bluebird');
 const Sequelize = require('sequelize');
 const Utils = require('../common/utils');
 
@@ -56,6 +57,40 @@ function _deleteScada (scadaId, trans) {
   return scadaVo.destroy({ where: { scadaId } }, { transaction: trans });
 }
 
+function _unbindScadas (scadaIds = [], trans) {
+  let promises = [];
+  for (let idx in scadaIds) {
+    promises.push(scadaVo.update({projectId: null}, {where: {scadaId: scadaIds[idx]}}, { transaction: trans }));
+  }
+  return Promise.all(promises);
+}
+
+/**
+ * 
+ * @param {Array} array: Object of Array
+ * @param {String} array[idx].projectId: project Id
+ * @param {String} array[idx].scadaId: scada Id
+ * @param {*} trans 
+ */
+function _bindScadas (array = [], trans) {
+  let promises = [];
+  for (let idx in array) {
+    promises.push(scadaVo.update({projectId: array[idx].projectId}, {where: {scadaId: array[idx].scadaId}}, { transaction: trans }));
+  }
+  return Promise.all(promises);
+}
+
+function _isScadaIdsAllExist (scadaIds = [], trans) {
+  let where = {scadaId: {$or: scadaIds}};
+  return new Promise((resolve, reject) => {
+    scadaVo.findAndCountAll({where: where}).then(function (res) {
+      return resolve(res.count === scadaIds.length);
+    }).catch(function (err) {
+      return reject(err);
+    });
+  });
+}
+
 module.exports = {
   init: _init,
   getScadaList: _getScadaList,
@@ -63,7 +98,10 @@ module.exports = {
   getScada: _getScada,
   insertScada: _insertScada,
   updateScada: _updateScada,
-  deleteScada: _deleteScada
+  deleteScada: _deleteScada,
+  unbindScadas: _unbindScadas,
+  bindScadas: _bindScadas,
+  isScadaIdsAllExist: _isScadaIdsAllExist
 };
 
 /* const BaseDao = require('./baseDao.js');
