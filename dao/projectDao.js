@@ -22,7 +22,7 @@ function _init (sequelize) {
  *  }
  */
 
-function _getProjectList (filterObj) {
+function _getProjectList (filterObj = {}) {
   let props = Object.keys(projectVo.attributes);
   let where = {};
   for (let idx in props) {
@@ -61,11 +61,23 @@ function _deleteProjectById (projectId, trans) {
   });
 }
 
+function _isProjectIdsAllExist (projectIds = [], trans) {
+  let where = {projectId: {$or: projectIds}};
+  return new Promise((resolve, reject) => {
+    projectVo.findAndCountAll({where: where}).then(function (res) {
+      return resolve(res.count === projectIds.length);
+    }).catch(function (err) {
+      return reject(err);
+    });
+  });
+}
+
 module.exports = {
   init: _init,
   getProjectList: _getProjectList,
   getProject: _getProject,
   insertProject: _insertProject,
   updateProjectById: _updateProjectById,
-  deleteProjectById: _deleteProjectById
+  deleteProjectById: _deleteProjectById,
+  isProjectIdsAllExist: _isProjectIdsAllExist
 };
