@@ -1,6 +1,9 @@
 'use strict';
 
+const Promise = require('bluebird');
+
 var deviceVo = null;
+var tagDao = require('./tagDao');
 
 function _init (sequelize) {
   deviceVo = sequelize.import('../models/deviceVo');
@@ -23,7 +26,10 @@ function _updateDevice (device, scadaId, deviceId, t) {
 }
 
 function _deleteDevice (scadaId, deviceId, t) {
-  return deviceVo.destroy({where: { scadaId, deviceId }}, { transaction: t });
+  let promises = [];
+  promises.push(deviceVo.destroy({where: { scadaId, deviceId }}, { transaction: t }));
+  promises.push(tagDao.deleteTagListByDeviceId(scadaId, deviceId, t));
+  return Promise.all(promises);
 }
 
 function _deleteDeviceListByScadaId (scadaId, t) {

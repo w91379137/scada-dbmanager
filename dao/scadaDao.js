@@ -5,6 +5,8 @@ const Sequelize = require('sequelize');
 const Utils = require('../common/utils');
 
 var scadaVo = null;
+var deviceDao = require('./deviceDao');
+var tagDao = require('./tagDao');
 
 function _init (sequelize) {
   scadaVo = sequelize.import('../models/scadaVo');
@@ -41,8 +43,12 @@ function _getScadaListByProjectId (projectId, params) {
   return scadaVo.findAndCountAll(filter);
 }
 
-function _getScada (projectId, scadaId) {
+function _getScadaByProjectId (projectId, scadaId) {
   return scadaVo.findOne({ where: { projectId, scadaId } });
+}
+
+function _getScada (scadaId) {
+  return scadaVo.findOne({ where: { scadaId } });
 }
 
 function _insertScada (scada, trans) {
@@ -54,7 +60,11 @@ function _updateScada (scada, scadaId, trans) {
 }
 
 function _deleteScada (scadaId, trans) {
-  return scadaVo.destroy({ where: { scadaId } }, { transaction: trans });
+  let promises = [];
+  promises.push(scadaVo.destroy({ where: { scadaId } }, { transaction: trans }));
+  promises.push(deviceDao.deleteDeviceListByScadaId(scadaId, trans));
+  promises.push(tagDao.deleteTagListByScadaId(scadaId, trans));
+  return Promise.all(promises);
 }
 
 function _unbindScadas (scadaIds = [], trans) {
@@ -95,6 +105,7 @@ module.exports = {
   init: _init,
   getScadaList: _getScadaList,
   getScadaListByProjectId: _getScadaListByProjectId,
+  getScadaByProjectId: _getScadaByProjectId,
   getScada: _getScada,
   insertScada: _insertScada,
   updateScada: _updateScada,

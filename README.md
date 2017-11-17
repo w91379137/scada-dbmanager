@@ -58,6 +58,8 @@ DBManager.init(conf);
 - `getTextTag(scadaId, deviceId, tagName)`
 - `getAlarmAnalogTag(scadaId, deviceId, tagName)`
 - `getAlarmDiscreteTag(scadaId, deviceId, tagName)`
+- `getWholeTagListByScadaId(scadaId)`
+- `getWholeTagListByDeviceId(scadaId, deviceId)`
 - `insertTag(tagObj, transaction)`
 - `insertAnalogTag(tagObj, transaction)`
 - `insertDiscreteTag(tagObj, transaction)`
