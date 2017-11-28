@@ -29,110 +29,51 @@ function _getUserScopeById (userId) {
 }
 
 function _insertUser (userObj, trans) {
-  let userName = userObj.userName;
-  return new Promise((resolve, reject) => {
-    userVo.findOne({ where: {userName} }).then(function (obj) {
-      if (obj) {
-        return reject(new Error(userName + ' is exist'));
-      }
-      resolve(userVo.create(userObj, { transaction: trans }));
-    }).catch(function (err) {
-      reject(err);
-    });
-  });
+  return userVo.create(userObj, { transaction: trans });
 }
 
 function _insertUserScopeById (userId, scopeList, trans) {
   let array = [];
-  return new Promise((resolve, reject) => {
-    scopeVo.findAll().then(function (scopes) {
-      scopes = scopes.map((o) => o.scopeId);
-      if(scopeList){
-        for (let idx = 0; idx < scopeList.length; idx++) {
-          if (scopes.indexOf(scopeList[idx]) === -1) {
-            return reject(new Error(scopeList[idx] + ' is not exist'));
-          }
-          if (array.indexOf(scopeList[idx]) === -1) {
-            array.push({ userId: userId, scopeId: scopeList[idx] });
-          }
-        }
-      }
-      resolve(userScopeVo.bulkCreate(array, { transaction: trans }));
-    }).catch(function (err) {
-      reject(err);
-    });
-  });
+  for (let idx = 0; idx < scopeList.length; idx++) {
+    array.push({ userId: userId, scopeId: scopeList[idx] });
+  }
+  return userScopeVo.bulkCreate(array, { transaction: trans });
 }
 
 function _updateUserByName (userName, userObj, trans) {
-  return new Promise((resolve, reject) => {
-    userVo.update(userObj, {where: {userName}}, { transaction: trans }).then(function (c) {
-      if (c === 0) {
-        reject(new Error('userName is not exist'));
-      }
-      resolve(true);
-    }).catch(function (err) {
-      reject(err);
-    });
-  });
+  return userVo.update(userObj, {where: {userName}}, { transaction: trans });
 }
 
 function _updateUserScopeByName (userName, scopeList, trans) {
-  return new Promise((resolve, reject) => {
-    userVo.findOne({where: {userName}}).then(function (user) {
-      let array = [];
-      scopeVo.findAll().then(function (scopes) {
-        scopes = scopes.map((o) => o.scopeId);
-        for (let idx = 0; idx < scopeList.length; idx++) {
-          if (scopes.indexOf(scopeList[idx]) === -1) {
-            reject(new Error(scopeList[idx] + ' is not exist'));
-          }
-          if (array.indexOf(scopeList[idx]) === -1) {
-            array.push({userId: user.userId, scopeId: scopeList[idx]});
-          }
-        }
-        userScopeVo.destroy({where: {userId: user.userId}}, { transaction: trans }).then(function (c) {
-          if (array.length === 0) {
-            resolve(true);
-          }
-          resolve(userScopeVo.bulkCreate(array, { transaction: trans }));
-        });
-      });
+  return userVo.findOne({where: {userName}}).then(function (user) {
+    let array = [];
+    for (let idx = 0; idx < scopeList.length; idx++) {
+      array.push({userId: user.userId, scopeId: scopeList[idx]});
+    }
+    return userScopeVo.destroy({where: {userId: user.userId}}, { transaction: trans }).then(function (c) {
+      return userScopeVo.bulkCreate(array, { transaction: trans });
     });
   });
 }
 
 function _updateUserScopeById (userId, scopeList, trans) {
-  return new Promise((resolve, reject) => {
-    let array = [];
-    scopeVo.findAll().then(function (scopes) {
-      scopes = scopes.map((o) => o.scopeId);
-      for (let idx = 0; idx < scopeList.length; idx++) {
-        if (scopes.indexOf(scopeList[idx]) === -1) {
-          reject(new Error(scopeList[idx] + ' is not exist'));
-        }
-        if (array.indexOf(scopeList[idx]) === -1) {
-          array.push({userId: userId, scopeId: scopeList[idx]});
-        }
-      }
-      userScopeVo.destroy({where: {userId}}, { transaction: trans }).then(function (c) {
-        if (array.length === 0) {
-          resolve(true);
-        }
-        resolve(userScopeVo.bulkCreate(array, { transaction: trans }));
-      });
-    });
+  let array = [];
+  for (let idx = 0; idx < scopeList.length; idx++) {
+    array.push({userId: userId, scopeId: scopeList[idx]});
+  }
+  return userScopeVo.destroy({where: {userId}}, { transaction: trans }).then(function (c) {
+    return userScopeVo.bulkCreate(array, { transaction: trans });
   });
 }
 
 function _deleteUserById (userId, trans) {
-  return userVo.destroy({ where: { userId } }, { transaction: trans }).then(function (c) {
-    return userScopeVo.destroy({ where: {userId} }, { transaction: trans });
+  return userVo.destroy({ where: { userId }, transaction: trans }).then(function (c) {
+    return userScopeVo.destroy({ where: {userId}, transaction: trans });
   });
 }
 
 function _deleteUserScope (userId, trans) {
-  return userScopeVo.destroy({ where: {userId} }, { transaction: trans });
+  return userScopeVo.destroy({ where: {userId}, transaction: trans });
 }
 
 module.exports = {

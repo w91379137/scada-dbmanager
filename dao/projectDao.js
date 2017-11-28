@@ -50,14 +50,14 @@ function _insertProject (project, trans) {
 function _updateProjectById (projectId, project, trans) {
   return projectVo.update(project, { where: { projectId } }, { transaction: trans }).then(function (c) {
     if (project.projectId && project.projectId !== projectId) {
-      return scadaVo.update({ projectId: project.projectId }, { where: { projectId: project.projectId }, transaction: trans });
+      return scadaVo.update({ projectId: project.projectId }, { where: { projectId: projectId } }, { transaction: trans });
     }
   });
 }
 
 function _deleteProjectById (projectId, trans) {
-  return projectVo.destroy({ where: { projectId } }, { transaction: trans }).then(function (rows) {
-    return scadaVo.update({projectId: null}, { where: { projectId }, transaction: trans });
+  return projectVo.destroy({ where: { projectId }, transaction: trans }).then(function (rows) {
+    return scadaVo.update({projectId: null}, { where: { projectId } }, { transaction: trans });
   });
 }
 

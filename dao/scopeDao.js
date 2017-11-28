@@ -23,7 +23,7 @@ function _updateScope (scopeObj, scopeId, trans) {
 }
 
 function _deleteScope (scopeId, trans) {
-  return scopeVo.destroy({ where: { scopeId } }, { transaction: trans });
+  return scopeVo.destroy({ where: { scopeId }, transaction: trans });
 }
 
 module.exports = {
