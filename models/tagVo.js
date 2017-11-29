@@ -23,8 +23,7 @@ module.exports = function (sequelize, dataTypes) {
     description: {
       type: dataTypes.STRING,
       field: 'tag_description',
-      allowNull: false,
-      defaultValue: ''
+      allowNull: true
     },
     alarmStatus: {
       type: dataTypes.BOOLEAN,

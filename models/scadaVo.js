@@ -22,20 +22,17 @@ module.exports = function (sequelize, dataTypes) {
     scadaDesc: {
       type: dataTypes.STRING,
       field: 'scada_description',
-      allowNull: false,
-      defaultValue: ''
+      allowNull: true
     },
     primaryScadaIP: {
       type: dataTypes.STRING,
       field: 'primary_scada_ip',
-      allowNull: false,
-      defaultValue: ''
+      allowNull: true
     },
     primaryScadaPort: {
       type: dataTypes.INTEGER,
       field: 'primary_scada_port',
-      allowNull: false,
-      defaultValue: 0
+      allowNull: true
     },
     backupScadaIP: {
       type: dataTypes.STRING,

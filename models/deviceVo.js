@@ -22,13 +22,12 @@ module.exports = function (sequelize, dataTypes) {
     comportNbr: {
       type: dataTypes.INTEGER,
       field: 'comport_nbr',
-      allowNull: false
+      allowNull: true
     },
     description: {
       type: dataTypes.STRING,
       field: 'device_description',
-      allowNull: false,
-      defaultValue: ''
+      allowNull: true
     },
     ip: {
       type: dataTypes.STRING,
