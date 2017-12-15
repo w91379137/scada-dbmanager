@@ -1,15 +1,18 @@
 'use strict';
 
 const Promise = require('bluebird');
+// var squel = require('squel').useFlavour('postgres');
 
 var userVo = null;
 var userScopeVo = null;
-var scopeVo = null;
+var userAllowDeviceVo = null;
+var _sequelize = null;
 
 function _init (sequelize) {
   userVo = sequelize.import('../models/userVo');
   userScopeVo = sequelize.import('../models/userScopeVo');
-  scopeVo = sequelize.import('../models/scopeVo');
+  userAllowDeviceVo = sequelize.import('../models/userAllowDeviceVo');
+  _sequelize = sequelize;
 }
 
 function _getUserList () {
@@ -29,7 +32,12 @@ function _getUserScopeById (userId) {
 }
 
 function _insertUser (userObj, trans) {
-  return userVo.create(userObj, { transaction: trans });
+  return userVo.findOne({where: {userName: userObj.userName}}).then((user) => {
+    if (user) {
+      Promise.reject(Error('userName is duplicated'));
+    }
+    return userVo.create(userObj, { transaction: trans });
+  });
 }
 
 function _insertUserScopeById (userId, scopeList, trans) {
@@ -41,7 +49,7 @@ function _insertUserScopeById (userId, scopeList, trans) {
 }
 
 function _updateUserByName (userName, userObj, trans) {
-  return userVo.update(userObj, {where: {userName}}, { transaction: trans });
+  return userVo.update(userObj, { where: {userName}, transaction: trans });
 }
 
 function _updateUserScopeByName (userName, scopeList, trans) {
@@ -68,12 +76,18 @@ function _updateUserScopeById (userId, scopeList, trans) {
 
 function _deleteUserById (userId, trans) {
   return userVo.destroy({ where: { userId }, transaction: trans }).then(function (c) {
-    return userScopeVo.destroy({ where: {userId}, transaction: trans });
+    return userScopeVo.destroy({ where: {userId}, transaction: trans }).then((result) => {
+      return userAllowDeviceVo.destroy({ where: {userId}, transaction: trans });
+    });
   });
 }
 
 function _deleteUserScope (userId, trans) {
   return userScopeVo.destroy({ where: {userId}, transaction: trans });
+}
+
+function _deleteUserAllowDeviceById (userId, trans) {
+  return userAllowDeviceVo.destroy({ where: {userId}, transaction: trans });
 }
 
 module.exports = {
@@ -82,11 +96,16 @@ module.exports = {
   getUserById: _getUserById,
   getUserByName: _getUserByName,
   getUserScopeById: _getUserScopeById,
+  /* getWholeByUserName: _getWholeByUserName,
+  getProjectByUserName: _getProjectByUserName,
+  getScadaByUserName: _getScadaByUserName,
+  getDeviceByUserName: _getDeviceByUserName, */
   insertUser: _insertUser,
   insertUserScopeById: _insertUserScopeById,
   updateUserByName: _updateUserByName,
   updateUserScopeByName: _updateUserScopeByName,
   updateUserScopeById: _updateUserScopeById,
   deleteUserById: _deleteUserById,
-  deleteUserScope: _deleteUserScope
+  deleteUserScope: _deleteUserScope,
+  deleteUserAllowDeviceById: _deleteUserAllowDeviceById
 };
