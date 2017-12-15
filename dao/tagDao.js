@@ -1,6 +1,8 @@
 'use strict';
 
 const Promise = require('bluebird');
+const Utils = require('../common/utils');
+var squel = require('squel').useFlavour('postgres');
 
 const constant = require('../common/const.js');
 
@@ -123,7 +125,7 @@ function _getTag (scadaId, deviceId, tagName) {
           break;
       }
       if (Vo) {
-        Vo.findOne({where: { scadaId, deviceId, tagName }}).then(function (info) {
+        return Vo.findOne({where: { scadaId, deviceId, tagName }}).then(function (info) {
           if (info) {
             resolve(Object.assign(obj.dataValues, info.dataValues));
           } else {
@@ -137,18 +139,215 @@ function _getTag (scadaId, deviceId, tagName) {
       reject(err);
     });
   });
-
-  /* let sql = 'SELECT * FROM scada.tag_list AS tag_list ' +
-  'LEFT OUTER JOIN scada.tag_text AS tag_text ON tag_list.scada_id = tag_text.scada_id AND tag_list.device_id = tag_text.device_id AND tag_list.tag_name = tag_text.tag_name ' +
-  'LEFT OUTER JOIN scada.tag_discrete AS tag_discrete ON tag_list.scada_id = tag_discrete.scada_id AND tag_list.device_id = tag_discrete.device_id AND tag_list.tag_name = tag_discrete.tag_name ' +
-  'LEFT OUTER JOIN scada.tag_analog AS tag_analog ON tag_list.scada_id = tag_analog.scada_id AND tag_list.device_id = tag_analog.device_id AND tag_list.tag_name = tag_analog.tag_name ' +
-  'WHERE tag_list.scada_id = $scadaId AND tag_list.device_id = $deviceId AND tag_list.tag_name = $tagName';
-  return _sequelize.query(sql, { bind: { scadaId: scadaId, deviceId: deviceId, tagName: tagName }, type: _sequelize.QueryTypes.SELECT }); */
 }
 
-function _getTagListByScadaId (scadaId) {
-  return tagVo.findAll({
-    where: { scadaId }
+/**
+ * @param {Object} filterObj
+ * @param {Integer} filterObj.offset: starting index
+ * @param {Integer} filterObj.limit: data retrived
+ * @param {String} filterObj.tagName: filter tag name
+ * @param {String} filterObj.description: filter tag desc
+ * @param {String} filterObj.sortby: sort properties
+ * @param {String} filterObj.order: order asc or not
+ * @param {Boolean} filterObj.detail: select id & name only
+ * @param {String} filterObj.userName: filter the tags that userName can access
+ */
+function _getTagList (filterObj = {}) {
+  let offset = filterObj.offset ? filterObj.offset : 0;
+  let limit = filterObj.limit ? filterObj.limit : null;
+  let sortby = filterObj.sortby ? filterObj.sortby : 'tagName';
+  let order = filterObj.order ? filterObj.order : true;
+  let detail = filterObj.detail ? filterObj.detail : false;
+
+  let sql = squel.select().from('scada.tag_list', 'Tag');
+  if (detail) {
+    for (let idx in tagVo.attributes) {
+      sql.field('Tag.' + tagVo.attributes[idx].field, idx);
+    }
+  } else {
+    sql.field('Tag.scada_id', 'scadaId');
+    sql.field('Tag.device_id', 'deviceId');
+    sql.field('Tag.tag_name', 'tagName');
+  }
+  sql.distinct();
+  if (filterObj.userName) {
+    sql.join('scada.user_allow_device', 'UserAllowDevice', squel.expr().and('Tag.scada_id = UserAllowDevice.scada_id').and('Tag.device_id = UserAllowDevice.device_id'));
+    sql.join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id'));
+    sql.where('Userinfo.user_name = ? ', filterObj.userName);
+  }
+  for (let idx in tagVo.attributes) {
+    let key = tagVo.attributes[idx];
+    if (!Utils.isNullOrUndefined(filterObj[idx])) {
+      sql.where('Tag.' + key.field + ' LIKE ?', filterObj[idx]);
+    }
+  }
+  sql.order(sortby, order);
+  return new Promise((resolve, reject) => {
+    _sequelize.query(sql.toString(), { type: _sequelize.QueryTypes.SELECT, model: tagVo }).then((raws) => {
+      resolve({count: raws.length, rows: raws.slice(offset, limit ? limit + offset : raws.length)});
+    }).catch((err) => {
+      reject(err);
+    });
+  });
+}
+
+/**
+ * @param {String} projectId
+ * @param {Object} filterObj
+ * @param {Integer} filterObj.offset: starting index
+ * @param {Integer} filterObj.limit: data retrived
+ * @param {String} filterObj.tagName: filter tag name
+ * @param {String} filterObj.description: filter tag desc
+ * @param {String} filterObj.sortby: sort properties
+ * @param {String} filterObj.order: order asc or not
+ * @param {Boolean} filterObj.detail: select id & name only
+ * @param {String} filterObj.userName: filter the tags that userName can access
+ */
+function _getTagListByProjectId (projectId, filterObj = {}) {
+  let offset = filterObj.offset ? filterObj.offset : 0;
+  let limit = filterObj.limit ? filterObj.limit : null;
+  let sortby = filterObj.sortby ? filterObj.sortby : 'tagName';
+  let order = filterObj.order ? filterObj.order : true;
+  let detail = filterObj.detail ? filterObj.detail : false;
+
+  let sql = squel.select().from('scada.tag_list', 'Tag');
+  if (detail) {
+    for (let idx in tagVo.attributes) {
+      sql.field('Tag.' + tagVo.attributes[idx].field, idx);
+    }
+  } else {
+    sql.field('Tag.scada_id', 'scadaId');
+    sql.field('Tag.device_id', 'deviceId');
+    sql.field('Scada.tag_name', 'tagName');
+  }
+  sql.distinct();
+  sql.join('scada.scada_list', 'Scada', squel.expr().and('Tag.scada_id = Scada.scada_id'));
+  if (filterObj.userName) {
+    sql.join('scada.user_allow_device', 'UserAllowDevice', squel.expr().and('Device.scada_id = UserAllowDevice.scada_id').and('Device.device_id = UserAllowDevice.device_id'));
+    sql.join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id'));
+    sql.where('Userinfo.user_name = ? ', filterObj.userName);
+  }
+  sql.where('Scada.proj_id = ? ', projectId);
+  for (let idx in tagVo.attributes) {
+    let key = tagVo.attributes[idx];
+    if (!Utils.isNullOrUndefined(filterObj[idx])) {
+      sql.where('Tag.' + key.field + ' LIKE ?', filterObj[idx]);
+    }
+  }
+  sql.order(sortby, order);
+  return new Promise((resolve, reject) => {
+    _sequelize.query(sql.toString(), { type: _sequelize.QueryTypes.SELECT, model: tagVo }).then((raws) => {
+      resolve({count: raws.length, rows: raws.slice(offset, limit ? limit + offset : raws.length)});
+    }).catch((err) => {
+      reject(err);
+    });
+  });
+}
+
+/**
+ * @param {String} scadaId
+ * @param {Object} filterObj
+ * @param {Integer} filterObj.offset: starting index
+ * @param {Integer} filterObj.limit: data retrived
+ * @param {String} filterObj.tagName: filter tag name
+ * @param {String} filterObj.description: filter tag desc
+ * @param {String} filterObj.sortby: sort properties
+ * @param {String} filterObj.order: order asc or desc
+ * @param {Boolean} filterObj.detail: select id & name only
+ * @param {String} filterObj.userName: filter the tags that userName can access
+ */
+function _getTagListByScadaId (scadaId, filterObj = {}) {
+  let offset = filterObj.offset ? filterObj.offset : 0;
+  let limit = filterObj.limit ? filterObj.limit : null;
+  let sortby = filterObj.sortby ? filterObj.sortby : 'tagName';
+  let order = filterObj.order ? filterObj.order : true;
+  let detail = filterObj.detail ? filterObj.detail : false;
+
+  let sql = squel.select().from('scada.tag_list', 'Tag');
+  if (detail) {
+    for (let idx in tagVo.attributes) {
+      sql.field('Tag.' + tagVo.attributes[idx].field, idx);
+    }
+  } else {
+    sql.field('Tag.scada_id', 'scadaId');
+    sql.field('Tag.device_id', 'deviceId');
+    sql.field('Tag.tag_name', 'tagName');
+  }
+  sql.distinct();
+  sql.join('scada.scada_list', 'Scada', squel.expr().and('Tag.scada_id = Scada.scada_id'));
+  if (filterObj.userName) {
+    sql.join('scada.user_allow_device', 'UserAllowDevice', squel.expr().and('Tag.scada_id = UserAllowDevice.scada_id').and('Tag.device_id = UserAllowDevice.device_id'));
+    sql.join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id'));
+    sql.where('Userinfo.user_name = ? ', filterObj.userName);
+  }
+  sql.where('Tag.scada_id = ? ', scadaId);
+  for (let idx in tagVo.attributes) {
+    let key = tagVo.attributes[idx];
+    if (!Utils.isNullOrUndefined(filterObj[idx])) {
+      sql.where('Tag.' + key.field + ' LIKE ?', filterObj[idx]);
+    }
+  }
+  sql.order(sortby, order);
+  return new Promise((resolve, reject) => {
+    _sequelize.query(sql.toString(), { type: _sequelize.QueryTypes.SELECT, model: tagVo }).then((raws) => {
+      resolve({count: raws.length, rows: raws.slice(offset, limit ? limit + offset : raws.length)});
+    }).catch((err) => {
+      reject(err);
+    });
+  });
+}
+
+/**
+ * @param {String} scadaId
+ * @param {String} deviceId
+ * @param {Object} filterObj
+ * @param {Integer} filterObj.offset: starting index
+ * @param {Integer} filterObj.limit: data retrived
+ * @param {String} filterObj.tagName: filter tag name
+ * @param {String} filterObj.description: filter tag desc
+ * @param {String} filterObj.sortby: sort properties
+ * @param {String} filterObj.order: order asc or desc
+ * @param {Boolean} filterObj.detail: select id & name only
+ * @param {String} filterObj.userName: filter the tags that userName can access
+ */
+function _getTagListByDeviceId (scadaId, deviceId, filterObj = {}) {
+  let offset = filterObj.offset ? filterObj.offset : 0;
+  let limit = filterObj.limit ? filterObj.limit : null;
+  let sortby = filterObj.sortby ? filterObj.sortby : 'tagName';
+  let order = filterObj.order ? filterObj.order : true;
+  let detail = filterObj.detail ? filterObj.detail : false;
+
+  let sql = squel.select().from('scada.tag_list', 'Tag');
+  if (detail) {
+    for (let idx in tagVo.attributes) {
+      sql.field('Tag.' + tagVo.attributes[idx].field, idx);
+    }
+  } else {
+    sql.field('Tag.scada_id', 'scadaId');
+    sql.field('Tag.device_id', 'deviceId');
+    sql.field('Tag.tag_name', 'tagName');
+  }
+  sql.distinct();
+  sql.join('scada.scada_list', 'Scada', squel.expr().and('Tag.scada_id = Scada.scada_id'));
+  if (filterObj.userName) {
+    sql.join('scada.user_allow_device', 'UserAllowDevice', squel.expr().and('Tag.scada_id = UserAllowDevice.scada_id').and('Tag.device_id = UserAllowDevice.device_id'));
+    sql.join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id'));
+    sql.where('Userinfo.user_name = ? ', filterObj.userName);
+  }
+  sql.where('Tag.scada_id = ? AND Tag.device_id = ?', scadaId, deviceId);
+  for (let idx in tagVo.attributes) {
+    let key = tagVo.attributes[idx];
+    if (!Utils.isNullOrUndefined(filterObj[idx])) {
+      sql.where('Tag.' + key.field + ' LIKE ?', filterObj[idx]);
+    }
+  }
+  sql.order(sortby, order);
+  return new Promise((resolve, reject) => {
+    _sequelize.query(sql.toString(), { type: _sequelize.QueryTypes.SELECT, model: tagVo }).then((raws) => {
+      resolve({count: raws.length, rows: raws.slice(offset, limit ? limit + offset : raws.length)});
+    }).catch((err) => {
+      reject(err);
+    });
   });
 }
 
@@ -189,12 +388,6 @@ function _getWholeTagListByDeviceId (scadaId, deviceId) {
       .catch((error) => {
         reject(error);
       });
-  });
-}
-
-function _getTagListBydeviceId (scadaId, deviceId) {
-  return tagVo.findAll({
-    where: { scadaId, deviceId }
   });
 }
 
@@ -252,39 +445,39 @@ function _insertAlarmDiscreteTag (tag, trans) {
   return alarmDiscreteVo.create(tag, { transaction: trans });
 }
 
-function _updateTag (tag, scadaId, deviceId, tagName, trans) {
+function _updateTag (scadaId, deviceId, tagName, tag, trans) {
   return tagVo.update(
-      tag, { where: { scadaId, deviceId, tagName } }, { transaction: trans }
+      tag, { where: { scadaId, deviceId, tagName }, transaction: trans }
     );
 }
 
-function _updateAnalogTag (tag, scadaId, deviceId, tagName, trans) {
+function _updateAnalogTag (scadaId, deviceId, tagName, tag, trans) {
   return analogTagVo.update(
-      tag, { where: { scadaId, deviceId, tagName } }, { transaction: trans }
+      tag, { where: { scadaId, deviceId, tagName }, transaction: trans }
     );
 }
 
-function _updateDiscreteTag (tag, scadaId, deviceId, tagName, trans) {
+function _updateDiscreteTag (scadaId, deviceId, tagName, tag, trans) {
   return discreteTagVo.update(
-      tag, { where: { scadaId, deviceId, tagName } }, { transaction: trans }
+      tag, { where: { scadaId, deviceId, tagName }, transaction: trans }
     );
 }
 
-function _updateTextTag (tag, scadaId, deviceId, tagName, trans) {
+function _updateTextTag (scadaId, deviceId, tagName, tag, trans) {
   return textTagVo.update(
-      tag, { where: { scadaId, deviceId, tagName } }, { transaction: trans }
+      tag, { where: { scadaId, deviceId, tagName }, transaction: trans }
     );
 }
 
-function _updateAlarmAnalogTag (tag, scadaId, deviceId, tagName, trans) {
+function _updateAlarmAnalogTag (scadaId, deviceId, tagName, tag, trans) {
   return alarmAnalogVo.update(
-      tag, { where: { scadaId, deviceId, tagName } }, { transaction: trans }
+      tag, { where: { scadaId, deviceId, tagName }, transaction: trans }
     );
 }
 
-function _updateAlarmDiscreteTag (tag, scadaId, deviceId, tagName, trans) {
+function _updateAlarmDiscreteTag (scadaId, deviceId, tagName, tag, trans) {
   return alarmDiscreteVo.update(
-      tag, { where: { scadaId, deviceId, tagName } }, { transaction: trans }
+      tag, { where: { scadaId, deviceId, tagName }, transaction: trans }
     );
 }
 
@@ -342,11 +535,13 @@ function _deleteAlarmTag (scadaId, deviceId, tagName, type, trans) {
 
 module.exports = {
   init: _init,
-  getTag: _getTag,
+  getTagList: _getTagList,
+  getTagListByProjectId: _getTagListByProjectId,
   getTagListByScadaId: _getTagListByScadaId,
+  getTagListByDeviceId: _getTagListByDeviceId,
+  getTag: _getTag,
   getWholeTagListByScadaId: _getWholeTagListByScadaId,
   getWholeTagListByDeviceId: _getWholeTagListByDeviceId,
-  getTagListBydeviceId: _getTagListBydeviceId,
   getAnalogTag: _getAnalogTag,
   getDiscreteTag: _getDiscreteTag,
   getTextTag: _getTextTag,
