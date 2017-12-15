@@ -19,7 +19,7 @@ module.exports = function (sequelize, dataTypes) {
       allowNull: false,
       defaultValue: ''
     },
-    scadaDesc: {
+    description: {
       type: dataTypes.STRING,
       field: 'scada_description',
       allowNull: true

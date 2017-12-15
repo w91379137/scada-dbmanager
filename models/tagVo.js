@@ -31,7 +31,7 @@ module.exports = function (sequelize, dataTypes) {
       allowNull: false,
       defaultValue: false
     },
-    type: {
+    tagType: {
       type: dataTypes.INTEGER,
       field: 'tag_type',
       allowNull: false

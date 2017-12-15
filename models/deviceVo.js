@@ -29,17 +29,17 @@ module.exports = function (sequelize, dataTypes) {
       field: 'device_description',
       allowNull: true
     },
-    ip: {
+    deviceIP: {
       type: dataTypes.STRING,
       field: 'device_ip',
       allowNull: true
     },
-    port: {
+    devicePort: {
       type: dataTypes.INTEGER,
       field: 'device_port',
       allowNull: true
     },
-    type: {
+    deviceType: {
       type: dataTypes.INTEGER,
       field: 'device_type',
       allowNull: false
