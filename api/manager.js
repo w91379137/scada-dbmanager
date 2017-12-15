@@ -9,6 +9,7 @@ const TagDao = require('../dao/tagDao.js');
 const UserDao = require('../dao/userDao.js');
 const ScopeDao = require('../dao/scopeDao.js');
 const RoleDao = require('../dao/roleDao.js');
+const UserAllowDeviceDao = require('../dao/userAllowDeviceDao.js');
 
 let sequelize = null;
 
@@ -36,6 +37,7 @@ function _init (postgresConf) {
   UserDao.init(sequelize);
   ScopeDao.init(sequelize);
   RoleDao.init(sequelize);
+  UserAllowDeviceDao.init(sequelize);
 }
 
 module.exports = {
@@ -47,5 +49,6 @@ module.exports = {
   TagDao: TagDao,
   UserDao: UserDao,
   ScopeDao: ScopeDao,
-  RoleDao: RoleDao
+  RoleDao: RoleDao,
+  UserAllowDeviceDao: UserAllowDeviceDao
 };
