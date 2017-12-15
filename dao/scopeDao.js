@@ -18,8 +18,8 @@ function _insertScope (scopeObj, trans) {
   return scopeVo.create(scopeObj, { transaction: trans });
 }
 
-function _updateScope (scopeObj, scopeId, trans) {
-  return scopeVo.update(scopeObj, { where: { scopeId } }, { transaction: trans });
+function _updateScope (scopeId, scopeObj, trans) {
+  return scopeVo.update(scopeObj, { where: { scopeId }, transaction: trans });
 }
 
 function _deleteScope (scopeId, trans) {

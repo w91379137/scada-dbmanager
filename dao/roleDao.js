@@ -25,7 +25,7 @@ function _insertRoleScope (roleId, scopeList, trans) {
 }
 
 function _updateRole (roleId, roleObj, trans) {
-  return roleVo.update(roleObj, {where: {roleId}}, { transaction: trans });
+  return roleVo.update(roleObj, { where: {roleId}, transaction: trans });
 }
 
 function _updateRoleScope (roleId, scopeList, trans) {
