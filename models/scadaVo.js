@@ -55,6 +55,12 @@ module.exports = function (sequelize, dataTypes) {
       field: 'heartbeat',
       allowNull: false,
       defaultValue: 0
+    },
+    configUploaded: {
+      type: dataTypes.BOOLEAN,
+      field: 'config_uploaded',
+      allowNull: false,
+      defaultValue: false
     }
   }, {
     timestamps: false,  // remove createAt and updateAt attributes

@@ -29,6 +29,10 @@ module.exports = function (sequelize, dataTypes) {
     userId: {
       type: dataTypes.STRING,
       field: 'user_id'
+    },
+    configUpdated: {
+      type: dataTypes.BOOLEAN,
+      filed: 'config_updated'
     }
   }, {
     timestamps: false,  // remove createAt and updateAt attributes

@@ -7,6 +7,7 @@ var squel = require('squel').useFlavour('postgres');
 var scadaVo = null;
 var userAllowDeviceVo = null;
 var deviceVo = null;
+var structModelVo = null;
 var tagDao = require('./tagDao');
 var _sequelize = null;
 
@@ -14,6 +15,7 @@ function _init (sequelize) {
   scadaVo = sequelize.import('../models/scadaVo');
   deviceVo = sequelize.import('../models/deviceVo');
   userAllowDeviceVo = sequelize.import('../models/userAllowDeviceVo');
+  structModelVo = sequelize.import('../models/structModelVo');
   _sequelize = sequelize;
 }
 
@@ -171,6 +173,7 @@ function _checkScadaRightByUserName (userName, filterObj = {}) {
   let sql = squel.select().from('scada.scada_list', 'Scada');
   sql.field('Scada.proj_id', 'projectId');
   sql.field('Scada.scada_id', 'scadaId');
+  sql.field('Scada.config_uploaded', 'configUpdated');
   sql.field('SUB.userId', 'userId');
   sql.distinct();
   sql.left_join(squel.select().from('scada.user_allow_device', 'UserAllowDevice')
@@ -186,7 +189,7 @@ function _checkScadaRightByUserName (userName, filterObj = {}) {
     sql.where(('UserAllowDevice.device_id = ?', filterObj.deviceId));
   }
   return new Promise((resolve, reject) => {
-    _sequelize.query(sql.toString(), { type: _sequelize.QueryTypes.SELECT, model: userAllowDeviceVo }).then((raws) => {
+    _sequelize.query(sql.toString(), { type: _sequelize.QueryTypes.SELECT, model: structModelVo }).then((raws) => {
       resolve(raws);
     }).catch((err) => {
       reject(err);
