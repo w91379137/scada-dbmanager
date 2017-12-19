@@ -21,8 +21,8 @@ function _getDevice (scadaId, deviceId) {
 
 /**
  * @param {Object} filterObj
- * @param {Integer} filterObj.offset: starting index
- * @param {Integer} filterObj.limit: data retrived
+ * @param {Number} filterObj.offset: starting index
+ * @param {Number} filterObj.limit: data retrived
  * @param {String} filterObj.deviceName: filter device name
  * @param {String} filterObj.description: filter device desc
  * @param {String} filterObj.sortby: sort properties
@@ -73,8 +73,8 @@ function _getDeviceList (filterObj = {}) {
 /**
  * @param {String} projectId
  * @param {Object} filterObj
- * @param {Integer} filterObj.offset: starting index
- * @param {Integer} filterObj.limit: data retrived
+ * @param {Number} filterObj.offset: starting index
+ * @param {Number} filterObj.limit: data retrived
  * @param {String} filterObj.deviceName: filter device name
  * @param {String} filterObj.description: filter device desc
  * @param {String} filterObj.sortby: sort properties
@@ -127,8 +127,8 @@ function _getDeviceListByProjectId (projectId, filterObj = {}) {
 /**
  * @param {String} scadaId
  * @param {Object} filterObj
- * @param {Integer} filterObj.offset: starting index
- * @param {Integer} filterObj.limit: data retrived
+ * @param {Number} filterObj.offset: starting index
+ * @param {Number} filterObj.limit: data retrived
  * @param {String} filterObj.deviceName: filter device name
  * @param {String} filterObj.description: filter device desc
  * @param {String} filterObj.sortby: sort properties
@@ -192,6 +192,13 @@ function _deleteDevice (scadaId, deviceId, t) {
   promises.push(userAllowDeviceVo.destroy({ where: { scadaId, deviceId }, transaction: t }));
   return Promise.all(promises);
 }
+function _deleteDeviceByScadaId (scadaId, t) {
+  let promises = [];
+  promises.push(deviceVo.destroy({ where: { scadaId }, transaction: t }));
+  promises.push(tagDao.deleteTagListByScadaId(scadaId, t));
+  promises.push(userAllowDeviceVo.destroy({ where: { scadaId, deviceId: { $ne: '' } }, transaction: t }));
+  return Promise.all(promises);
+}
 
 function _checkDeviceRightByUserName (userName) {
   let sql = squel.select().from('scada.device_list', 'Device');
@@ -222,6 +229,7 @@ module.exports = {
   getDevice: _getDevice,
   insertDevice: _insertDevice,
   updateDevice: _updateDevice,
+  deleteDeviceByScadaId: _deleteDeviceByScadaId,
   deleteDevice: _deleteDevice,
   checkDeviceRightByUserName: _checkDeviceRightByUserName
 };
