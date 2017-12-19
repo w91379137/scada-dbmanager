@@ -40,7 +40,7 @@ module.exports = function (sequelize, dataTypes) {
       allowNull: true
     },
     deviceType: {
-      type: dataTypes.INTEGER,
+      type: dataTypes.STRING(32),
       field: 'device_type',
       allowNull: false
     }
