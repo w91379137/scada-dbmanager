@@ -30,9 +30,9 @@ module.exports = function (sequelize, dataTypes) {
       type: dataTypes.STRING,
       field: 'user_id'
     },
-    configUpdated: {
+    configUploaded: {
       type: dataTypes.BOOLEAN,
-      filed: 'config_updated'
+      filed: 'config_uploaded'
     }
   }, {
     timestamps: false,  // remove createAt and updateAt attributes
