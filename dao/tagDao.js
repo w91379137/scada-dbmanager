@@ -113,24 +113,41 @@ function _getTag (scadaId, deviceId, tagName) {
         resolve(obj);
       }
       let Vo = null;
-      switch (parseInt(obj.type)) {
+      // let alarmVo = null;
+      switch (parseInt(obj.tagType)) {
         case constant.tagType.analog:
           Vo = analogTagVo;
+          // alarmVo = alarmAnalogVo;
           break;
         case constant.tagType.discrete:
           Vo = discreteTagVo;
+          // alarmVo = alarmDiscreteVo;
           break;
         case constant.tagType.text:
-          Vo = discreteTagVo;
+          Vo = textTagVo;
           break;
       }
       if (Vo) {
         return Vo.findOne({where: { scadaId, deviceId, tagName }}).then(function (info) {
+          // obj = info ? Object.assign(obj.dataValues, info.dataValues) : obj.dataValues;
           if (info) {
-            resolve(Object.assign(obj.dataValues, info.dataValues));
+            obj = Object.assign(obj.dataValues, info.dataValues);
+          }
+          /* if (alarmVo) {
+            return alarmVo.findOne({where: { scadaId, deviceId, tagName }}).then(function (alarm) {
+              obj.alarm = {};
+              if (alarm) {
+                delete alarm.scadaId;
+                delete alarm.deviceId;
+                delete alarm.tagName;
+                obj.alarm = alarm;
+              }
+              resolve(obj);
+            });
           } else {
             resolve(obj);
-          }
+          } */
+          resolve(obj);
         });
       } else {
         resolve(obj);

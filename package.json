@@ -1,6 +1,6 @@
 {
   "name": "scada-dbmanager",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "scada-dbmanager is a utility of EI-PaaS SCADA for database management.",
   "main": "index.js",
   "scripts": {

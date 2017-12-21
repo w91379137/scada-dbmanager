@@ -29,6 +29,7 @@ function _getDevice (scadaId, deviceId) {
  * @param {String} filterObj.order: order asc or not
  * @param {Boolean} filterObj.detail: select id & name only
  * @param {String} filterObj.userName: filter the devices that userName can access
+ * @param {Boolean} filterObj.projectId: show projectId or not
  *  }
  */
 function _getDeviceList (filterObj = {}) {
@@ -37,6 +38,7 @@ function _getDeviceList (filterObj = {}) {
   let sortby = filterObj.sortby ? filterObj.sortby : 'deviceId';
   let order = filterObj.order ? filterObj.order : true;
   let detail = filterObj.detail ? filterObj.detail : false;
+  let projectId = filterObj.projectId ? filterObj.projectId : false;
 
   let sql = squel.select().from('scada.device_list', 'Device');
   if (detail) {
@@ -47,6 +49,10 @@ function _getDeviceList (filterObj = {}) {
     sql.field('Device.scada_id', 'scadaId');
     sql.field('Device.device_id', 'deviceId');
     sql.field('Device.device_name', 'deviceName');
+  }
+  if (projectId) {
+    sql.field('Scada.proj_id');
+    sql.join('scada.scada_list', 'Scada', squel.expr().and('Device.scada_id = Scada.scada_id'));
   }
   sql.distinct();
   if (filterObj.userName) {
@@ -63,6 +69,15 @@ function _getDeviceList (filterObj = {}) {
   sql.order(sortby, order);
   return new Promise((resolve, reject) => {
     _sequelize.query(sql.toString(), { type: _sequelize.QueryTypes.SELECT, model: deviceVo }).then((raws) => {
+      if (projectId) {
+        let res = [];
+        for (let idx = 0; idx < raws.length; idx++) {
+          let o = Object.assign({projectId: raws[idx].dataValues.proj_id}, raws[idx].dataValues);
+          delete o.proj_id;
+          res.push(o);
+        }
+        raws = res;
+      }
       resolve({count: raws.length, rows: raws.slice(offset, limit ? limit + offset : raws.length)});
     }).catch((err) => {
       reject(err);
