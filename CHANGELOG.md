@@ -1,3 +1,7 @@
+# [1.0.17] - 2017-12-26
+## Changed
+- `TagDao.getTag`: add alarm info
+
 # [1.0.16] - 2017-12-25
 ## Fixed
 - typo
