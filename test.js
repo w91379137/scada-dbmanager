@@ -2,16 +2,8 @@
 
 const DBManager = require('./index.js');
 
-/* const psqlConfig = {
-  hostname: '52.175.25.104',
-  port: 5432,
-  username: 'bdcb4d33-ed2a-49e0-ae2f-2eeaaae5b630',
-  password: '3n2o3gq7mamtg63anu64luves3',
-  database: 'ef91ff67-3b3e-4c47-9091-fa24ad062c0d'
-}; */
-
 const psqlConfig = {
-  hostname: '172.16.12.119',
+  hostname: 'wacloud',
   port: 5432,
   username: 'postgres',
   password: 'admin',
@@ -29,128 +21,17 @@ var tagDao = DBManager.TagDao;
 var userDao = DBManager.UserDao;
 var scopeDao = DBManager.ScopeDao;
 var projectDao = DBManager.ProjectDao;
+var roleDao = DBManager.RoleDao;
+var userAllowDeviceDao = DBManager.UserAllowDeviceDao;
 
 let projectId = 'reqwer';
-let scadaId = 'test';
+let scadaId = '71c957bc-b5b1-4e02-8087-b06cc44baf74';
 let deviceId = 'test';
 let tagName = 'test';
 
-tagDao.getTag(scadaId, deviceId, tagName).then((result) => {
-  if(result) {
-    console.log('Create Tags Successfully');
-    tagDao.deleteTag(scadaId, deviceId, tagName).then((result) => {
-      tagDao.getTag(scadaId, deviceId, tagName).then((result) => {
-        if(!result){
-          console.log('Delete Tags Successfully');
-        }
-      }).catch((err) => {
-        console.log(err);
-      });
-    }).catch((err) => {
-      console.log(err);
-    });
-  } else {
-    console.log('Create Tags failed');
-  }
-}).catch((err) => {
-  console.log(err);
-});
-
-
-/* deviceDao.getDevice(scadaId, deviceId).then((result) => {
-  if (result && result.dataValues) {
-    console.log('Create Device Successfully');
-    tagDao.getWholeTagListByDeviceId(scadaId, deviceId).then((result) => {
-      if (result && result.analogTagList.length > 0 && result.discreteTagList.length > 0 && result.textTagList.length > 0) {
-        console.log('Create Tags Successfully');
-        deviceDao.deleteDevice(scadaId, deviceId).then((result) => {
-          deviceDao.getDevice(scadaId, deviceId).then((result) => {
-            if (!result) {
-              console.log('Delete Device Successfully');
-              tagDao.getWholeTagListByDeviceId(scadaId, deviceId).then((result) => {
-                if (result && result.analogTagList.length === 0 && result.discreteTagList.length === 0 && result.textTagList.length === 0) {
-                  console.log('Delete Tags Successfully');
-                } else {
-                  console.log('Delete Tags failed');
-                }
-              }).catch((err) => {
-                console.log(err);
-              });
-            } else {
-              console.log('Delete Device failed');
-            }
-          }).catch((err) => {
-            console.log(err);
-          });
-        }).catch((err) => {
-          console.log(err);
-        });
-      } else {
-        console.log('Create Tags failed');
-      }
-    }).catch((err) => {
-      console.log(err);
-    });
-  } else {
-    console.log('Create Device failed');
-  }
-}).catch((err) => {
-  console.log(err);
-});
-
-/*scadaDao.getScada(null, scadaId).then((result) => {
-  if (result && result.dataValues) {
-    console.log('Create Scada Successfully');
-    deviceDao.getDeviceListByScadaId(scadaId).then((result) => {
-      if (result && result.length > 0) {
-        console.log('Create Device Successfully');
-        tagDao.getWholeTagListByScadaId(scadaId).then((result) => {
-          if (result && result.analogTagList.length > 0 && result.discreteTagList.length > 0 && result.textTagList.length > 0) {
-            console.log('Create Tags Successfully');
-            scadaDao._deleteScada(scadaId).then((result) => {
-              scadaDao.getScada(null, scadaId).then((result) => {
-                if (!result) {
-                  console.log('Delete Scada Successfully');
-                  deviceDao.getDeviceListByScadaId(scadaId).then((result) => {
-                    if (result && result.length === 0) {
-                      console.log('Delete Device Successfully');
-                      tagDao.getWholeTagListByScadaId(scadaId).then((result) => {
-                        if (result && result.analogTagList.length === 0 && result.discreteTagList.length === 0 && result.textTagList.length === 0) {
-                          console.log('Delete Tags Successfully');
-                        } else {
-                          console.log('Delete Tags failed');
-                        }
-                      }).catch((err) => {
-                        console.log(err);
-                      });
-                    } else {
-                      console.log('Delete Device failed');
-                    }
-                  }).catch((err) => {
-                    console.log(err);
-                  });
-                } else {
-                  console.log('Delete Scada failed');
-                }
-              }).catch((err) => {
-                console.log(err);
-              });
-            }).catch((err) => {
-              console.log(err);
-            });
-          } else {
-            console.log('Create Tags failed');
-          }
-        }).catch((err) => {
-          console.log(err);
-        });
-      } else {
-        console.log('Create Device failed');
-      }
-    });
-  } else {
-    console.log('Create Scada failed');
-  }
+tagDao.getTag('b453fef1-985e-4205-9025-28c4e8fa0413', 'P01_Mobus', 'AI003').then((result) => {
+  
+  console.log(result);
 }).catch((err) => {
   console.log(err);
 });
