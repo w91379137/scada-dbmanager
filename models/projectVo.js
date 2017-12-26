@@ -8,7 +8,7 @@ module.exports = function (sequelize, dataTypes) {
       primaryKey: true,
       allowNull: false
     },
-    projectDesc: {
+    description: {
       type: dataTypes.STRING(256),
       field: 'proj_description',
       allowNull: true
