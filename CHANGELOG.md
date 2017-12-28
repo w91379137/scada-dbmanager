@@ -4,8 +4,8 @@
     - getParamsByScadaId
     - insertParams
 ## Changed
-- ScadaDao.getScada: return credential key
-- ScadaDao.deleteScada: return service guid
+    - ScadaDao.getScada: return credential key
+    - ScadaDao.deleteScada: return service guid
 
 # [1.0.27] - 2018-03-02
 ## Fixed

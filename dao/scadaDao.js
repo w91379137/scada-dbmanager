@@ -9,6 +9,7 @@ var userAllowDeviceVo = null;
 var deviceVo = null;
 var structModelVo = null;
 var tagDao = require('./tagDao');
+var scadaParamsVo = null;
 var _sequelize = null;
 var mapper = {};
 
@@ -17,6 +18,7 @@ function _init (sequelize) {
   deviceVo = sequelize.import('../models/deviceVo');
   userAllowDeviceVo = sequelize.import('../models/userAllowDeviceVo');
   structModelVo = sequelize.import('../models/structModelVo');
+  scadaParamsVo = sequelize.import('../models/scadaParamsVo');
   _sequelize = sequelize;
   for (let key in scadaVo.attributes) {
     mapper[scadaVo.attributes[key].field] = key;
@@ -129,7 +131,13 @@ function _getScadaListByProjectId (projectId, filterObj = {}) {
 }
 
 function _getScada (scadaId) {
-  return scadaVo.findOne({ where: { scadaId } });
+  return new Promise((resolve, reject) => {
+    return scadaVo.findOne({ where: { scadaId } }).then((scada) => {
+      return scadaParamsVo.findOne({where: {scadaId, key: 'DCCS_SERVICE_KEY_NAME'}}).then((raw) => {
+        return resolve(Object.assign(scada.dataValues, {credentialKey: raw.value ? raw.value : null}));
+      });
+    });
+  });
 }
 
 function _insertScada (scadas, trans) {
@@ -154,12 +162,19 @@ function _updateScada (scadaId, scada, trans) {
 }
 
 function _deleteScada (scadaId, trans) {
-  let promises = [];
-  promises.push(scadaVo.destroy({ where: { scadaId }, transaction: trans }));
-  promises.push(deviceVo.destroy({ where: { scadaId }, transaction: trans }));
-  promises.push(tagDao.deleteTagListByScadaId(scadaId, trans));
-  promises.push(userAllowDeviceVo.destroy({ where: { scadaId }, transaction: trans }));
-  return Promise.all(promises);
+  return new Promise((resolve, reject) => {
+    return scadaParamsVo.find({ where: { scadaId, key: 'DCCS_SERVICE_KEY_GUID' }, transaction: trans }).then((raw) => {
+      let promises = [];
+      promises.push(scadaVo.destroy({ where: { scadaId }, transaction: trans }));
+      promises.push(scadaParamsVo.destroy({ where: { scadaId }, transaction: trans }));
+      promises.push(deviceVo.destroy({ where: { scadaId }, transaction: trans }));
+      promises.push(tagDao.deleteTagListByScadaId(scadaId, trans));
+      promises.push(userAllowDeviceVo.destroy({ where: { scadaId }, transaction: trans }));
+      return Promise.all(promises).then((result) => {
+        return resolve(raw.value);
+      });
+    });
+  });
 }
 
 /* function _unbindScadas (scadaIds = [], trans) {
