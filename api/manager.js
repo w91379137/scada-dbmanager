@@ -11,6 +11,7 @@ const ScopeDao = require('../dao/scopeDao.js');
 const RoleDao = require('../dao/roleDao.js');
 const SysParamDao = require('../dao/sysParamDao.js');
 const UserAllowDeviceDao = require('../dao/userAllowDeviceDao.js');
+const ScadaParamsDao = require('../dao/scadaParamsDao.js');
 
 let sequelize = null;
 
@@ -40,6 +41,7 @@ function _init (postgresConf, option = {}) {
   RoleDao.init(sequelize);
   SysParamDao.init(sequelize);
   UserAllowDeviceDao.init(sequelize);
+  ScadaParamsDao.init(sequelize);
 }
 
 module.exports = {
@@ -53,5 +55,6 @@ module.exports = {
   ScopeDao: ScopeDao,
   RoleDao: RoleDao,
   SysParamDao: SysParamDao,
-  UserAllowDeviceDao: UserAllowDeviceDao
+  UserAllowDeviceDao: UserAllowDeviceDao,
+  ScadaParamsDao: ScadaParamsDao
 };
