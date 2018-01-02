@@ -161,25 +161,29 @@ function _deleteScada (scadaId, trans) {
  * @param {*} trans
  */
 function _bindScadas (array = [], trans) {
-  return new Promise((resolve, reject) => {
-    let data = [];
-    for (let idx in array) {
-      let sql = squel.update()
-        .table('scada.user_allow_device', 't')
-        .set('proj_id', array[idx].projectId)
-        .where(squel.str('EXISTS(?)', squel.select().from('scada.user_allow_device', 'o').where('o.proj_id = ?', array[idx].projectId).where('o.user_id = t.user_id')))
-        .where('scada_id = ?', array[idx].scadaId)
-        .toString();
-      data.push(sql);
-      sql = squel.delete()
-        .from('scada.user_allow_device', 't')
-        .where('scada_id = ? AND proj_id <> ?', array[0].scadaId, array[0].projectId)
-        .toString();
-      data.push(sql);
-    }
-    return Promise.mapSeries(data, (sql) => {
-      return _sequelize.query(sql);
-    });
+  let data = [];
+  for (let idx in array) {
+    let sql = squel.update()
+      .table('scada.scada_list')
+      .set('proj_id', array[idx].projectId)
+      .where('scada_id = ?', array[idx].scadaId)
+      .toString();
+    data.push(sql);
+    sql = squel.update()
+      .table('scada.user_allow_device', 't')
+      .set('proj_id', array[idx].projectId)
+      .where(squel.str('EXISTS(?)', squel.select().from('scada.user_allow_device', 'o').where('o.proj_id = ?', array[idx].projectId).where('o.user_id = t.user_id')))
+      .where('scada_id = ?', array[idx].scadaId)
+      .toString();
+    data.push(sql);
+    sql = squel.delete()
+      .from('scada.user_allow_device', 't')
+      .where('scada_id = ? AND proj_id <> ?', array[0].scadaId, array[0].projectId)
+      .toString();
+    data.push(sql);
+  }
+  return Promise.mapSeries(data, (sql) => {
+    return _sequelize.query(sql, {transaction: trans});
   });
 }
 
