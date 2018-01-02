@@ -1,3 +1,7 @@
+# [Unrelease]
+## Fixed
+- `ScadaDao.bindScada`: if user have new project access right, then update projectId = new projectId, or delete the scada access right
+
 # [1.0.17] - 2017-12-26
 ## Changed
 - `TagDao.getTag`: add alarm info
