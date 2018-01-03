@@ -96,10 +96,6 @@ module.exports = {
   getUserById: _getUserById,
   getUserByName: _getUserByName,
   getUserScopeById: _getUserScopeById,
-  /* getWholeByUserName: _getWholeByUserName,
-  getProjectByUserName: _getProjectByUserName,
-  getScadaByUserName: _getScadaByUserName,
-  getDeviceByUserName: _getDeviceByUserName, */
   insertUser: _insertUser,
   insertUserScopeById: _insertUserScopeById,
   updateUserByName: _updateUserByName,

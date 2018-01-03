@@ -17,5 +17,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/coolgo0811/scada-dbmanager.git"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^4.1.0"
   }
 }

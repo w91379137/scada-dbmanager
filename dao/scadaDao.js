@@ -132,8 +132,8 @@ function _insertScada (scada, trans) {
   return scadaVo.create(scada, { transaction: trans });
 }
 
-function _updateScada (scadaId, scada, trans) {
-  return scadaVo.update(scada, { where: { scadaId }, transaction: trans });
+function _updateScada (filter, scada, trans) {
+  return scadaVo.update(scada, { where: filter, transaction: trans });
 }
 
 function _deleteScada (scadaId, trans) {

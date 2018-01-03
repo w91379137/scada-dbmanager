@@ -1,4 +1,13 @@
 # [Unrelease]
+## Added
+- ProjectTrx
+    - init
+    - getProjectList(filter)
+    - getProject(projectId, option)
+    - insertProject(project, option)
+    - updateProject(projectId, project, option)
+    - deleteProject(projectId, option)
+
 ## Fixed
 - `ScadaDao.bindScada`: if user have new project access right, then update projectId = new projectId, or delete the scada access right
 

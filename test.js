@@ -15,26 +15,30 @@ const scada = {
 };
 
 DBManager.init(psqlConfig);
-var scadaDao = DBManager.ScadaDao;
+/* var scadaDao = DBManager.ScadaDao;
 var deviceDao = DBManager.DeviceDao;
 var tagDao = DBManager.TagDao;
 var userDao = DBManager.UserDao;
 var scopeDao = DBManager.ScopeDao;
-var projectDao = DBManager.ProjectDao;
 var roleDao = DBManager.RoleDao;
-var userAllowDeviceDao = DBManager.UserAllowDeviceDao;
+var userAllowDeviceDao = DBManager.UserAllowDeviceDao; */
+var ProjectTrx = DBManager.ProjectTrx;
 
 let projectId = 'reqwer';
 let scadaId = '71c957bc-b5b1-4e02-8087-b06cc44baf74';
 let deviceId = 'test';
 let tagName = 'test';
 
-tagDao.getTag('b453fef1-985e-4205-9025-28c4e8fa0413', 'P01_Mobus', 'AI003').then((result) => {
-  
+let project = {
+  projectId: 'testtttt',
+  description: ''
+};
+
+ProjectTrx.insertProject(project).then((result) => {
   console.log(result);
 }).catch((err) => {
   console.log(err);
-});
+})
 
 /* scadaDao.deleteScadaByScadaId('test').then((result) => {
   console.log(result);

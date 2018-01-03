@@ -1,13 +1,11 @@
 'use strict';
 
 const Promise = require('bluebird');
-const Utils = require('../common/utils');
 var squel = require('squel').useFlavour('postgres');
 
 var projectVo = null;
 var scadaVo = null;
 var userAllowDeviceVo = null;
-var scadaDao = require('./scadaDao');
 var _sequelize = null;
 
 function _init (sequelize) {
@@ -19,24 +17,16 @@ function _init (sequelize) {
 
 /**
  * @param {Object} filterObj
- * @param {Integer} filterObj.offset: starting index
- * @param {Integer} filterObj.limit: data retrived
- * @param {String} filterObj.projectId: filter project name
- * @param {String} filterObj.description: filter project desc
- * @param {String} filterObj.sortby: sort properties
- * @param {String} filterObj.order: order asc or not
- * @param {Boolean} filterObj.detail: select id & name only
- * @param {String} filterObj.userName: filter the projects that userName can access
+ * @param {Object} option
+ * @param {String} option.sortby: sort properties
+ * @param {String} option.order: order asc or not
+ * @param {Boolean} option.detail: select id & name only
+ * @param {String} option.userName: filter the projects that userName can access
+ * @param {String} option.projectId: filter the projectId
  *  }
  */
 
-function _getProjectList (filterObj = {}) {
-  let offset = filterObj.offset ? filterObj.offset : 0;
-  let limit = filterObj.limit ? filterObj.limit : null;
-  let sortby = filterObj.sortby ? filterObj.sortby : 'projectId';
-  let order = filterObj.order ? filterObj.order : true;
-  let detail = filterObj.detail ? filterObj.detail : false;
-
+function _getProjectList (filter = {}, {sortby, order, detail, userName, projectId}) {
   let sql = squel.select().from('scada.project_list', 'Project');
   if (detail) {
     for (let idx in projectVo.attributes) {
@@ -46,21 +36,21 @@ function _getProjectList (filterObj = {}) {
     sql.field('Project.proj_id', 'projectId');
   }
   sql.distinct();
-  if (filterObj.userName) {
+  if (userName) {
     sql.join('scada.user_allow_device', 'UserAllowDevice', squel.expr().and('Project.proj_id = UserAllowDevice.proj_id'));
     sql.join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id'));
-    sql.where('Userinfo.user_name = ?', filterObj.userName);
+    sql.where('Userinfo.user_name = ?', userName);
   }
-  for (let idx in projectVo.attributes) {
-    let key = projectVo.attributes[idx];
-    if (!Utils.isNullOrUndefined(filterObj[idx])) {
-      sql.where('Project.' + key.field + ' LIKE ?', filterObj[idx]);
-    }
+  if (projectId) {
+    sql.where('Project.proj_id = ?', projectId);
+  }
+  for (let key in filter) {
+    sql.where('Project.' + key + ' LIKE ?', filter[key]);
   }
   sql.order(sortby, order);
   return new Promise((resolve, reject) => {
     _sequelize.query(sql.toString(), { type: _sequelize.QueryTypes.SELECT, model: projectVo }).then((raws) => {
-      resolve({count: raws.length, rows: raws.slice(offset, limit ? limit + offset : raws.length)});
+      resolve(raws);
     }).catch((err) => {
       reject(err);
     });
@@ -75,29 +65,15 @@ function _insertProject (project, trans) {
   return projectVo.create(project, { transaction: trans });
 }
 
-function _updateProject (projectId, project, trans) {
-  return projectVo.update(project, { where: { projectId }, transaction: trans }).then(function (c) {
-    if (project.projectId && project.projectId !== projectId) {
-      return scadaVo.update({ projectId: project.projectId }, { where: { projectId }, transaction: trans }).then((result) => {
-        return userAllowDeviceVo.update({ projectId: project.projectId }, { where: { projectId }, transaction: trans });
-      });
-    }
-  });
+function _updateProject (filter = {}, project, trans) {
+  return projectVo.update(project, { where: filter, transaction: trans });
 }
 
-function _deleteProject (projectId, trans) {
-  let promises = [];
-  return scadaVo.findAll({where: {projectId}}).then(function (scadas) {
-    for (let idx in scadas) {
-      promises.push(scadaDao.deleteScada(scadas[idx].scadaId, trans));
-    }
-    promises.push(projectVo.destroy({ where: { projectId }, transaction: trans }));
-    promises.push(userAllowDeviceVo.destroy({ where: { projectId }, transaction: trans }));
-    return Promise.all(promises);
-  });
+function _deleteProject (filter, trans) {
+  return projectVo.destroy({where: filter, transaction: trans});
 }
 
-function _checkProjectRightByUserName (userName, filterObj = {}) {
+function _getProjectsRightByUserName (userName, filterObj = {}) {
   let sql = squel.select().from('scada.project_list', 'Project');
   sql.field('Project.proj_id', 'projectId');
   sql.field('SUB.userId', 'userId');
@@ -128,8 +104,8 @@ module.exports = {
   init: _init,
   getProjectList: _getProjectList,
   getProject: _getProject,
+  getProjectsRightByUserName: _getProjectsRightByUserName,
   insertProject: _insertProject,
   updateProject: _updateProject,
-  deleteProject: _deleteProject,
-  checkProjectRightByUserName: _checkProjectRightByUserName
+  deleteProject: _deleteProject
 };
