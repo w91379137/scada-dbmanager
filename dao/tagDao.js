@@ -134,10 +134,10 @@ function _getTag (scadaId, deviceId, tagName) {
             return alarmVo.findOne({where: { scadaId, deviceId, tagName }}).then(function (alarm) {
               obj.alarm = {};
               if (alarm) {
-                delete alarm.scadaId;
-                delete alarm.deviceId;
-                delete alarm.tagName;
-                obj.alarm = alarm;
+                obj.alarm = alarm.dataValues;
+                delete obj.alarm.scadaId;
+                delete obj.alarm.deviceId;
+                delete obj.alarm.tagName;
               }
               resolve(obj);
             });
