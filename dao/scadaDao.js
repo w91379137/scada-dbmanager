@@ -35,7 +35,7 @@ function _getScadaList (filterObj = {}) {
   let offset = filterObj.offset ? filterObj.offset : 0;
   let limit = filterObj.limit ? filterObj.limit : null;
   let sortby = filterObj.sortby ? filterObj.sortby : 'scadaId';
-  let order = filterObj.order ? filterObj.order : true;
+  let order = filterObj.order !== null ? filterObj.order : true;
   let detail = filterObj.detail ? filterObj.detail : false;
 
   let sql = squel.select().from('scada.scada_list', 'Scada');
@@ -87,7 +87,7 @@ function _getScadaListByProjectId (projectId, filterObj = {}) {
   let offset = filterObj.offset ? filterObj.offset : 0;
   let limit = filterObj.limit ? filterObj.limit : null;
   let sortby = filterObj.sortby ? filterObj.sortby : 'scadaId';
-  let order = filterObj.order ? filterObj.order : true;
+  let order = filterObj.order !== null ? filterObj.order : true;
   let detail = filterObj.detail ? filterObj.detail : false;
 
   let sql = squel.select().from('scada.scada_list', 'Scada');
@@ -197,7 +197,7 @@ function _checkScadaRightByUserName (userName, filterObj = {}) {
   sql.left_join(squel.select().from('scada.user_allow_device', 'UserAllowDevice')
   .field('UserAllowDevice.user_id', 'userId').field('UserAllowDevice.scada_id', 'scadaId')
   .join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id').and('Userinfo.user_name = ?', userName)), 'SUB', 'SUB.scadaId = Scada.scada_id');
-  if (filterObj.projectId) {
+  /* if (filterObj.projectId) {
     sql.where(('UserAllowDevice.proj_id = ?', filterObj.projectId));
   }
   if (filterObj.scadaId) {
@@ -205,7 +205,7 @@ function _checkScadaRightByUserName (userName, filterObj = {}) {
   }
   if (filterObj.deviceId) {
     sql.where(('UserAllowDevice.device_id = ?', filterObj.deviceId));
-  }
+  } */
   return new Promise((resolve, reject) => {
     _sequelize.query(sql.toString(), { type: _sequelize.QueryTypes.SELECT, model: structModelVo }).then((raws) => {
       resolve(raws);

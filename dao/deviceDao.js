@@ -36,7 +36,7 @@ function _getDeviceList (filterObj = {}) {
   let offset = filterObj.offset ? filterObj.offset : 0;
   let limit = filterObj.limit ? filterObj.limit : null;
   let sortby = filterObj.sortby ? filterObj.sortby : 'deviceId';
-  let order = filterObj.order ? filterObj.order : true;
+  let order = filterObj.order !== null ? filterObj.order : true;
   let detail = filterObj.detail ? filterObj.detail : false;
   let projectId = filterObj.projectId ? filterObj.projectId : false;
 
@@ -102,7 +102,7 @@ function _getDeviceListByProjectId (projectId, filterObj = {}) {
   let offset = filterObj.offset ? filterObj.offset : 0;
   let limit = filterObj.limit ? filterObj.limit : null;
   let sortby = filterObj.sortby ? filterObj.sortby : 'deviceId';
-  let order = filterObj.order ? filterObj.order : true;
+  let order = filterObj.order !== null ? filterObj.order : true;
   let detail = filterObj.detail ? filterObj.detail : false;
 
   let sql = squel.select().from('scada.device_list', 'Device');
@@ -156,7 +156,7 @@ function _getDeviceListByScadaId (scadaId, filterObj = {}) {
   let offset = filterObj.offset ? filterObj.offset : 0;
   let limit = filterObj.limit ? filterObj.limit : null;
   let sortby = filterObj.sortby ? filterObj.sortby : 'deviceId';
-  let order = filterObj.order ? filterObj.order : true;
+  let order = filterObj.order !== null ? filterObj.order : true;
   let detail = filterObj.detail ? filterObj.detail : false;
 
   let sql = squel.select().from('scada.device_list', 'Device');

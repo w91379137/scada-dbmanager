@@ -1,3 +1,7 @@
+# [Unrelease]
+## Fixed
+- filter order init
+
 # [1.0.18]
 ## Fixed
 - `ScadaDao.bindScada`: if user have new project access right, then update projectId = new projectId, or delete the scada access right
