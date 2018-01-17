@@ -483,20 +483,14 @@ function _updateTextTag (scadaId, deviceId, tagName, tag, trans) {
 }
 
 function _updateAlarmAnalogTag (scadaId, deviceId, tagName, tag, trans) {
-  tag.scadaId = scadaId;
-  tag.deviceId = deviceId;
-  tag.tagName = tagName;
   return alarmAnalogVo.upsert(
-      tag, { transaction: trans }
+      Object.assign(tag, {scadaId, deviceId, tagName}), { transaction: trans }
     );
 }
 
 function _updateAlarmDiscreteTag (scadaId, deviceId, tagName, tag, trans) {
-  tag.scadaId = scadaId;
-  tag.deviceId = deviceId;
-  tag.tagName = tagName;
   return alarmDiscreteVo.upsert(
-      tag, { transaction: trans }
+    Object.assign(tag, {scadaId, deviceId, tagName}), { transaction: trans }
     );
 }
 
