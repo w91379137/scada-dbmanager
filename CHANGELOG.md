@@ -1,6 +1,7 @@
-# [Unrelease]
+# [1.0.19] - 2018-01-17
 ## Fixed
 - filter order init
+- update tag alarm
 
 # [1.0.18]
 ## Fixed
