@@ -1,9 +1,17 @@
 # [Unrelease]
 ## Added
 - SysParam model
+- Role
+    - getRoleList
+    - getRole
 
 ## Changed
 - postgres config rename hostname as host
+- User
+    - getUserList
+    - getUserById
+    - getUserByName
+    - insertUser
 
 # [1.0.19] - 2018-01-17
 ## Fixed

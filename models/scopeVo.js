@@ -7,7 +7,7 @@ module.exports = function (sequelize, dataTypes) {
       field: 'scope_id',
       primaryKey: true
     },
-    scopeDesc: {
+    description: {
       type: dataTypes.STRING(256),
       field: 'scope_description',
       allowNull: true

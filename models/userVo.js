@@ -11,7 +11,14 @@ module.exports = function (sequelize, dataTypes) {
     userName: {
       type: dataTypes.STRING(128),
       field: 'user_name',
-      allowNull: false
+      allowNull: false,
+      unique: true,
+      validate: {
+        isEmail: {
+          msg: 'Email address must be valid'
+        },
+        notEmpty: true
+      }
     },
     email: {
       type: dataTypes.STRING(256),
@@ -23,7 +30,7 @@ module.exports = function (sequelize, dataTypes) {
       field: 'sso_role',
       allowNull: false
     },
-    userDesc: {
+    description: {
       type: dataTypes.STRING(256),
       field: 'user_description',
       allowNull: true
