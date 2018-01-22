@@ -1,15 +1,48 @@
 'use strict';
 
 const Promise = require('bluebird');
+var squel = require('squel').useFlavour('postgres');
 
 var roleVo = null;
 var roleScopeVo = null;
 var scopeVo = null;
+var _sequelize = null;
 
 function _init (sequelize) {
   roleVo = sequelize.import('../models/roleVo');
   roleScopeVo = sequelize.import('../models/roleScopeVo');
   scopeVo = sequelize.import('../models/scopeVo');
+  _sequelize = sequelize;
+}
+
+function _getRoleList () {
+  return roleVo.findAll({}).then((roles) => {
+    if (roles.length > 0) {
+      roles = roles.map((role) => Object.assign({scope: []}, role.dataValues));
+      return roleScopeVo.findAll({}).then((scopes) => {
+        for (let scope of scopes) {
+          roles.find((role) => role.roleId === scope.roleId).scope.push(scope.scopeId);
+        }
+        return Promise.resolve(roles);
+      });
+    } else {
+      return Promise.resolve(roles);
+    }
+  });
+}
+
+function _getRole (roleId) {
+  return roleVo.findOne({where: {roleId}}).then((role) => {
+    if (role) {
+      role = role.dataValues;
+      return roleScopeVo.findAll({where: {roleId}}).then((scopes) => {
+        role.scope = [].concat(scopes.map((s) => s.scopeId));
+        return Promise.resolve(role);
+      });
+    } else {
+      return Promise.resolve(role);
+    }
+  });
 }
 
 function _insertRole (roleObj, trans) {
@@ -50,6 +83,8 @@ function _deleteRoleScope (roleId, trans) {
 
 module.exports = {
   init: _init,
+  getRoleList: _getRoleList,
+  getRole: _getRole,
   insertRole: _insertRole,
   insertRoleScope: _insertRoleScope,
   updateRole: _updateRole,

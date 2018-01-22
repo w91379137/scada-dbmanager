@@ -7,7 +7,7 @@ module.exports = function (sequelize, dataTypes) {
       field: 'role_id',
       primaryKey: true
     },
-    roleDesc: {
+    description: {
       type: dataTypes.STRING(256),
       field: 'role_description',
       allowNull: true
