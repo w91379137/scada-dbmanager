@@ -71,8 +71,13 @@ function _getProject (projectId) {
   return projectVo.findOne({ where: { projectId } });
 }
 
-function _insertProject (project, trans) {
-  return projectVo.create(project, { transaction: trans });
+function _insertProject (projects, trans) {
+  // return projectVo.create(project, { transaction: trans });
+  if (Array.isArray(projects)) {
+    return projectVo.bulkCreate(projects, { transaction: trans });
+  } else {
+    return projectVo.create(projects, { transaction: trans });
+  }
 }
 
 function _updateProject (projectId, project, trans) {
