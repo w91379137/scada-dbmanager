@@ -1,3 +1,7 @@
+# [Unrelease]
+## Changed
+- postgres config rename hostname as host
+
 # [1.0.19] - 2018-01-17
 ## Fixed
 - filter order init
