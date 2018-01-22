@@ -1,4 +1,7 @@
 # [Unrelease]
+## Added
+- SysParam model
+
 ## Changed
 - postgres config rename hostname as host
 
