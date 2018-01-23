@@ -28,7 +28,7 @@ function _init (postgresConf) {
       idle: 10000
     },
     quoteIdentifiers: false,
-    logging: true
+    logging: false
   });
 
   ProjectDao.init(sequelize);

@@ -1,24 +1,19 @@
 'use strict';
 
 const Promise = require('bluebird');
-var squel = require('squel').useFlavour('postgres');
 
 var roleVo = null;
 var roleScopeVo = null;
-var scopeVo = null;
-var _sequelize = null;
 
 function _init (sequelize) {
   roleVo = sequelize.import('../models/roleVo');
   roleScopeVo = sequelize.import('../models/roleScopeVo');
-  scopeVo = sequelize.import('../models/scopeVo');
-  _sequelize = sequelize;
 }
 
 function _getRoleList () {
   return roleVo.findAll({}).then((roles) => {
     if (roles.length > 0) {
-      roles = roles.map((role) => Object.assign({scope: []}, role.dataValues));
+      roles = roles.map((role) => Object.assign(role.dataValues, {scope: []}));
       return roleScopeVo.findAll({}).then((scopes) => {
         for (let scope of scopes) {
           roles.find((role) => role.roleId === scope.roleId).scope.push(scope.scopeId);
