@@ -4,6 +4,11 @@
 - Role
     - getRoleList
     - getRole
+- Support bulkCreate
+    - projectDao
+    - scadaDao
+    - deviceDao
+    - tagDao
 
 ## Changed
 - postgres config rename hostname as host
