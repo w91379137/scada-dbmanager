@@ -192,8 +192,12 @@ function _getDeviceListByScadaId (scadaId, filterObj = {}) {
   });
 }
 
-function _insertDevice (device, t) {
-  return deviceVo.create(device, { transaction: t });
+function _insertDevice (devices, t) {
+  if (Array.isArray(devices)) {
+    return deviceVo.bulkCreate(devices, { transaction: t });
+  } else {
+    return deviceVo.create(devices, { transaction: t });
+  }
 }
 
 function _updateDevice (scadaId, deviceId, device, t) {

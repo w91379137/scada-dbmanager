@@ -128,8 +128,12 @@ function _getScada (scadaId) {
   return scadaVo.findOne({ where: { scadaId } });
 }
 
-function _insertScada (scada, trans) {
-  return scadaVo.create(scada, { transaction: trans });
+function _insertScada (scadas, trans) {
+  if (Array.isArray(scadas)) {
+    return scadaVo.bulkCreate(scadas, { transaction: trans });
+  } else {
+    return scadaVo.create(scadas, { transaction: trans });
+  }
 }
 
 function _updateScada (scadaId, scada, trans) {

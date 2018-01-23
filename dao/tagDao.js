@@ -434,28 +434,52 @@ function _getAlarmDiscreteTag (scadaId, deviceId, tagName) {
   });
 }
 
-function _insertTag (tag, trans) {
-  return tagVo.create(tag, { transaction: trans });
+function _insertTag (tags, trans) {
+  if (Array.isArray(tags)) {
+    return tagVo.bulkCreate(tags, { transaction: trans });
+  } else {
+    return tagVo.create(tags, { transaction: trans });
+  }
 }
 
-function _insertAnalogTag (tag, trans) {
-  return analogTagVo.create(tag, { transaction: trans });
+function _insertAnalogTag (tags, trans) {
+  if (Array.isArray(tags)) {
+    return analogTagVo.bulkCreate(tags, { transaction: trans });
+  } else {
+    return analogTagVo.create(tags, { transaction: trans });
+  }
 }
 
-function _insertDiscreteTag (tag, trans) {
-  return discreteTagVo.create(tag, { transaction: trans });
+function _insertDiscreteTag (tags, trans) {
+  if (Array.isArray(tags)) {
+    return discreteTagVo.bulkCreate(tags, { transaction: trans });
+  } else {
+    return discreteTagVo.create(tags, { transaction: trans });
+  }
 }
 
-function _insertTextTag (tag, trans) {
-  return textTagVo.create(tag, { transaction: trans });
+function _insertTextTag (tags, trans) {
+  if (Array.isArray(tags)) {
+    return textTagVo.bulkCreate(tags, { transaction: trans });
+  } else {
+    return textTagVo.create(tags, { transaction: trans });
+  }
 }
 
-function _insertAlarmAnalogTag (tag, trans) {
-  return alarmAnalogVo.create(tag, { transaction: trans });
+function _insertAlarmAnalogTag (tags, trans) {
+  if (Array.isArray(tags)) {
+    return alarmAnalogVo.bulkCreate(tags, { transaction: trans });
+  } else {
+    return alarmAnalogVo.create(tags, { transaction: trans });
+  }
 }
 
-function _insertAlarmDiscreteTag (tag, trans) {
-  return alarmDiscreteVo.create(tag, { transaction: trans });
+function _insertAlarmDiscreteTag (tags, trans) {
+  if (Array.isArray(tags)) {
+    return alarmDiscreteVo.bulkCreate(tags, { transaction: trans });
+  } else {
+    return alarmDiscreteVo.create(tags, { transaction: trans });
+  }
 }
 
 function _updateTag (scadaId, deviceId, tagName, tag, trans) {

@@ -17,6 +17,7 @@ module.exports = function (sequelize, dataTypes) {
     tagName: {
       type: dataTypes.STRING,
       field: 'tag_name',
+      primaryKey: true,
       allowNull: true
     },
     alarmPriority0: {

@@ -1,6 +1,7 @@
 'use strict';
 
 const DBManager = require('./index.js');
+const uuidV4 = require('uuid/v4');
 
 const psqlConfig = {
   hostname: 'wacloud',
@@ -29,18 +30,215 @@ let scadaId = '71c957bc-b5b1-4e02-8087-b06cc44baf74';
 let deviceId = 'test';
 let tagName = 'test';
 
-tagDao.getTag('b453fef1-985e-4205-9025-28c4e8fa0413', 'P01_Mobus', 'AI003').then((result) => {
-  
-  console.log(result);
-}).catch((err) => {
-  console.log(err);
-});
+// tagDao.getTag('b453fef1-985e-4205-9025-28c4e8fa0413', 'P01_Mobus', 'AI003').then((result) => {
+//   console.log(result);
+// }).catch((err) => {
+//   console.log(err);
+// });
+/*
+let scadaInfo = {
+  scadaId: '128545bb-61d5-40f9-bbd8-2ee41a8fc34c',
+  name: 'scadafoo',
+  description: 'scadafoo',
+  primaryIP: '127.0.0.1',
+  primaryPort: 80,
+  backupIP: '',
+  backupPort: 0,
+  type: 1
+};
 
-/* scadaDao.deleteScadaByScadaId('test').then((result) => {
-  console.log(result);
-}).catch((err) => {
-  console.log(err);
-}) */
+let scadaInfoArr = [{
+  scadaId: uuidV4(),
+  name: 'scadafoo',
+  description: 'scadafoo',
+  primaryIP: '127.0.0.1',
+  primaryPort: 80,
+  backupIP: '',
+  backupPort: 0,
+  type: 1
+}, {
+  scadaId: '128545bb-61d5-40f9-bbd8-2ee41a8fc34c',
+  name: 'scadafoo',
+  description: 'scadafoo',
+  primaryIP: '127.0.0.1',
+  primaryPort: 80,
+  backupIP: '',
+  backupPort: 0,
+  type: 1
+}, {
+  scadaId: uuidV4(),
+  name: 'scadafoo',
+  description: 'scadafoo',
+  primaryIP: '127.0.0.1',
+  primaryPort: 80,
+  backupIP: '',
+  backupPort: 0,
+  type: 1
+}];
+
+let deviceInfo = {
+  scadaId: uuidV4(),
+  deviceId: 'P01_devicefoo',
+  deviceName: 'devicefoo',
+  comportNbr: 1,
+  description: 'boshen test',
+  ip: '127.0.0.1',
+  port: 0,
+  deviceType: 1
+};
+
+let deviceInfoArr = [
+  {
+    scadaId: uuidV4(),
+    deviceId: 'P01_devicefoo',
+    deviceName: 'devicefoo',
+    comportNbr: 1,
+    description: 'boshen test',
+    ip: '127.0.0.1',
+    port: 0,
+    deviceType: 1
+  },
+  {
+    scadaId: uuidV4(),
+    deviceId: 'P01_devicefoo',
+    deviceName: 'devicefoo',
+    comportNbr: 1,
+    description: 'boshen test',
+    ip: '127.0.0.1',
+    port: 0,
+    deviceType: 1
+  },
+  {
+    scadaId: uuidV4(),
+    deviceId: 'P01_devicefoo',
+    deviceName: 'devicefoo',
+    comportNbr: 1,
+    description: 'boshen test',
+    ip: '127.0.0.1',
+    port: 0,
+    deviceType: 1
+  }
+];
+
+let projectInfo = {
+  projectId: 'boshen',
+  description: 'boshen test'
+};
+
+let projectInfoArr = [
+  {
+    projectId: 'boshen5',
+    description: 'boshen test'
+  },{
+    projectId: 'boshen1',
+    description: 'boshen test'
+  },{
+    projectId: 'boshen33',
+    description: 'boshen test'
+  }
+];
+
+let tagInfo = {
+  scadaId: uuidV4(),
+  deviceId: 'P01_devicefoo',
+  tagName: 'tagfoo',
+  description: 'boshen',
+  alarmStatus: true,
+  tagType: 1
+};
+
+let tagInfoArr = [
+  {
+    scadaId: uuidV4(),
+    deviceId: 'P01_devicefoo',
+    tagName: 'tagfoo',
+    description: 'boshen',
+    alarmStatus: true,
+    tagType: 1
+  },{
+    scadaId: '3579a72d-d90a-4e9c-a69c-7c17c42a065a',
+    deviceId: 'P01_devicefoo123',
+    tagName: 'tagfoo1234',
+    description: 'boshen',
+    alarmStatus: true,
+    tagType: 1
+  },{
+    scadaId: uuidV4(),
+    deviceId: 'P01_devicefoo',
+    tagName: 'tagfoo',
+    description: 'boshen',
+    alarmStatus: true,
+    tagType: 1
+  }
+];
+*/
+/*
+DBManager.conn().transaction().then(function (trans) {
+  return scadaDao.insertScada(scadaInfoArr, trans).then(function (res) {
+    return trans.commit();
+  }).catch(function (err) {
+    if (err) {
+      console.log(err);
+      return trans.rollback();
+    }
+  });
+});
+*/
+
+/*
+DBManager.conn().transaction().then(function (trans) {
+  return deviceDao.insertDevice(deviceInfoArr, trans).then(function (res) {
+    return trans.commit();
+  }).catch(function (err) {
+    if (err) {
+      console.log(err);
+      return trans.rollback();
+    }
+  });
+});
+*/
+/*
+DBManager.conn().transaction().then(function (trans) {
+  return projectDao.insertProject(projectInfoArr, trans).then(function (res) {
+    return trans.commit();
+  }).catch(function (err) {
+    if (err) {
+      console.log(err);
+      return trans.rollback();
+    }
+  });
+});
+*/
+/*
+DBManager.conn().transaction().then(function (trans) {
+  return tagDao.insertTag(tagInfoArr, trans).then(function (res) {
+    return trans.commit();
+  }).catch(function (err) {
+    if (err) {
+      console.log(err);
+      return trans.rollback();
+    }
+  });
+});
+*/
+/*
+DBManager.conn().transaction().then(function (trans) {
+  return tagDao.insertAlarmDiscreteTag(tagInfoArr, trans).then(function (res) {
+    return trans.commit();
+  }).catch(function (err) {
+    if (err) {
+      console.log(err);
+      return trans.rollback();
+    }
+  });
+});
+*/
+
+// scadaDao.deleteScada('b48de3e1-4960-4666-8868-658005d04ad6').then((result) => {
+//   console.log(result);
+// }).catch((err) => {
+//   console.log(err);
+// })
 
 /* scadaDao.bindScadas([{projectId: projectId, scadaId: scadaId}]).then((result) => {
   console.log(result);
