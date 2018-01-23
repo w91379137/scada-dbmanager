@@ -1,4 +1,4 @@
-# [Unrelease]
+# [1.0.20] - 2018-01-23
 ## Added
 - SysParam model
 - Role
