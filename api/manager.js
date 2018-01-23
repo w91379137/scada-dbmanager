@@ -9,7 +9,7 @@ const TagDao = require('../dao/tagDao.js');
 const UserDao = require('../dao/userDao.js');
 const ScopeDao = require('../dao/scopeDao.js');
 const RoleDao = require('../dao/roleDao.js');
-const SysParamDao = require('../dao/SysParamDao.js');
+const SysParamDao = require('../dao/sysParamDao.js');
 const UserAllowDeviceDao = require('../dao/userAllowDeviceDao.js');
 
 let sequelize = null;
