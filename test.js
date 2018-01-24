@@ -4,7 +4,7 @@ const DBManager = require('./index.js');
 const uuidV4 = require('uuid/v4');
 
 const psqlConfig = {
-  hostname: 'wacloud',
+  host: 'wacloud',
   port: 5432,
   username: 'postgres',
   password: 'admin',
@@ -30,11 +30,11 @@ let scadaId = '71c957bc-b5b1-4e02-8087-b06cc44baf74';
 let deviceId = 'test';
 let tagName = 'test';
 
-// tagDao.getTag('b453fef1-985e-4205-9025-28c4e8fa0413', 'P01_Mobus', 'AI003').then((result) => {
-//   console.log(result);
-// }).catch((err) => {
-//   console.log(err);
-// });
+ tagDao.getDiscreteList({scadaId: 'ef314a5a-ae3e-4edb-bc31-bf8dacec93ce', deviceId: 'P01_Modsim', tagName: 'TestAO3449'}).then((result) => {
+   console.log(result);
+ }).catch((err) => {
+   console.log(err);
+ });
 /*
 let scadaInfo = {
   scadaId: '128545bb-61d5-40f9-bbd8-2ee41a8fc34c',
