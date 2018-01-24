@@ -106,6 +106,22 @@ function __getTextTagListByDeviceId (scadaId, deviceId) {
   return _sequelize.query(sql, { bind: { scadaId: scadaId, deviceId: deviceId }, type: _sequelize.QueryTypes.SELECT, model: wholeTextTagVo });
 }
 
+function _getTagListWithFilter (tags = []) {
+  if (Array.isArray(tags) && tags.length === 0) {
+    return Promise.resolve(tags);
+  }
+
+  let where = {$or: []};
+  if (!Array.isArray(tags)) {
+    where.$or.push({scadaId: tags.scadaId, deviceId: tags.deviceId, tagName: tags.tagName});
+  } else {
+    for (let tag of tags) {
+      where.$or.push({$and: [{scadaId: tag.scadaId, deviceId: tag.deviceId, tagName: tag.tagName}]});
+    }
+  }
+  return tagVo.findAll({where});
+}
+
 function _getTag (scadaId, deviceId, tagName) {
   return new Promise((resolve, reject) => {
     tagVo.findOne({where: { scadaId, deviceId, tagName }}).then(function (obj) {
@@ -434,6 +450,38 @@ function _getAlarmDiscreteTag (scadaId, deviceId, tagName) {
   });
 }
 
+function _getAnalogList (tags = []) {
+  if (Array.isArray(tags) && tags.length === 0) {
+    return Promise.resolve(tags);
+  }
+
+  let where = {$or: []};
+  if (!Array.isArray(tags)) {
+    where.$or.push({scadaId: tags.scadaId, deviceId: tags.deviceId, tagName: tags.tagName});
+  } else {
+    for (let tag of tags) {
+      where.$or.push({$and: [{scadaId: tag.scadaId, deviceId: tag.deviceId, tagName: tag.tagName}]});
+    }
+  }
+  return analogTagVo.findAll({where});
+}
+
+function _getDiscreteList (tags = []) {
+  if (Array.isArray(tags) && tags.length === 0) {
+    return Promise.resolve(tags);
+  }
+
+  let where = {$or: []};
+  if (!Array.isArray(tags)) {
+    where.$or.push({scadaId: tags.scadaId, deviceId: tags.deviceId, tagName: tags.tagName});
+  } else {
+    for (let tag of tags) {
+      where.$or.push({$and: [{scadaId: tag.scadaId, deviceId: tag.deviceId, tagName: tag.tagName}]});
+    }
+  }
+  return discreteTagVo.findAll({where});
+}
+
 function _insertTag (tags, trans) {
   if (Array.isArray(tags)) {
     return tagVo.bulkCreate(tags, { transaction: trans });
@@ -576,6 +624,7 @@ module.exports = {
   getTagListByProjectId: _getTagListByProjectId,
   getTagListByScadaId: _getTagListByScadaId,
   getTagListByDeviceId: _getTagListByDeviceId,
+  getTagListWithFilter: _getTagListWithFilter,
   getTag: _getTag,
   getWholeTagListByScadaId: _getWholeTagListByScadaId,
   getWholeTagListByDeviceId: _getWholeTagListByDeviceId,
@@ -584,6 +633,8 @@ module.exports = {
   getTextTag: _getTextTag,
   getAlarmAnalogTag: _getAlarmAnalogTag,
   getAlarmDiscreteTag: _getAlarmDiscreteTag,
+  getAnalogList: _getAnalogList,
+  getDiscreteList: _getDiscreteList,
   insertTag: _insertTag,
   insertAnalogTag: _insertAnalogTag,
   insertDiscreteTag: _insertDiscreteTag,

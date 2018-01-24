@@ -1,3 +1,10 @@
+# [1.0.21] - 2018-01-24
+## Added
+- tagDao
+    - getTagListWithFilter
+    - getAnalogList
+    - getDiscreteList
+
 # [1.0.20] - 2018-01-23
 ## Added
 - SysParam model
