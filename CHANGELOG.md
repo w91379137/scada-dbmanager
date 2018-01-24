@@ -1,10 +1,11 @@
-# [1.0.21] - 2018-01-24
+# [1.0.22] - 2018-01-24
 ## Added
 - tagDao
     - getTagListWithFilter
     - getAnalogList
     - getDiscreteList
-    
+
+# [1.0.21] - 2018-01-23
 ## Fixed
 - typo
 
