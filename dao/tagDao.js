@@ -508,57 +508,54 @@ function _getDiscreteList (tags = []) {
 }
 
 function _insertTag (tags, trans) {
-  if (Array.isArray(tags)) {
-    return tagVo.bulkCreate(tags, { transaction: trans }).then((array) => {
-      return Promise.map(array, (tag) => {
-        let obj = {};
-        for (let key in tag.dataValues) {
-          if (tagMapper[key]) {
-            obj[tagMapper[key]] = tag.dataValues[key];
-          }
-        }
-        return obj;
-      });
-    });
-  } else {
-    return tagVo.create(tags, { transaction: trans });
+  if (!Array.isArray(tags)) {
+    tags = [tags];
   }
+  return tagVo.bulkCreate(tags, { transaction: trans }).then((array) => {
+    return Promise.map(array, (tag) => {
+      let obj = {};
+      for (let key in tag.dataValues) {
+        if (tagMapper[key]) {
+          obj[tagMapper[key]] = tag.dataValues[key];
+        }
+      }
+      return obj;
+    });
+  });
 }
 
 function _insertAnalogTag (tags, trans) {
-  if (Array.isArray(tags)) {
-    return analogTagVo.bulkCreate(tags, { transaction: trans }).then((array) => {
-      return Promise.map(array, (tag) => {
-        let obj = {};
-        for (let key in tag.dataValues) {
-          if (analogMapper[key]) {
-            obj[analogMapper[key]] = tag.dataValues[key];
-          }
-        }
-        return obj;
-      });
-    });
-  } else {
-    return analogTagVo.create(tags, { transaction: trans });
+  if (!Array.isArray(tags)) {
+    tags = [tags];
   }
+  return analogTagVo.bulkCreate(tags, { transaction: trans }).then((array) => {
+    return Promise.map(array, (tag) => {
+      let obj = {};
+      for (let key in tag.dataValues) {
+        if (analogMapper[key]) {
+          obj[analogMapper[key]] = tag.dataValues[key];
+        }
+      }
+      return obj;
+    });
+  });
 }
 
 function _insertDiscreteTag (tags, trans) {
   if (Array.isArray(tags)) {
-    return discreteTagVo.bulkCreate(tags, { transaction: trans }).then((array) => {
-      return Promise.map(array, (tag) => {
-        let obj = {};
-        for (let key in tag.dataValues) {
-          if (discreteMapper[key]) {
-            obj[discreteMapper[key]] = tag.dataValues[key];
-          }
-        }
-        return obj;
-      });
-    });
-  } else {
-    return discreteTagVo.create(tags, { transaction: trans });
+    tags = [tags];
   }
+  return discreteTagVo.bulkCreate(tags, { transaction: trans }).then((array) => {
+    return Promise.map(array, (tag) => {
+      let obj = {};
+      for (let key in tag.dataValues) {
+        if (discreteMapper[key]) {
+          obj[discreteMapper[key]] = tag.dataValues[key];
+        }
+      }
+      return obj;
+    });
+  });
 }
 
 function _insertTextTag (tags, trans) {

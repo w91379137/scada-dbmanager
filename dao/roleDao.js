@@ -45,21 +45,20 @@ function _getRole (roleId) {
 }
 
 function _insertRole (roles, trans) {
-  if (Array.isArray(roles)) {
-    return roleVo.bulkCreate(roles, {transaction: trans}).then((array) => {
-      return Promise.map(array, (role) => {
-        let obj = {};
-        for (let key in role.dataValues) {
-          if (mapper[key]) {
-            obj[mapper[key]] = role.dataValues[key];
-          }
-        }
-        return obj;
-      });
-    });
-  } else {
-    return roleVo.create(roles, { transaction: trans });
+  if (!Array.isArray(roles)) {
+    roles = [roles];
   }
+  return roleVo.bulkCreate(roles, {transaction: trans}).then((array) => {
+    return Promise.map(array, (role) => {
+      let obj = {};
+      for (let key in role.dataValues) {
+        if (mapper[key]) {
+          obj[mapper[key]] = role.dataValues[key];
+        }
+      }
+      return obj;
+    });
+  });
 }
 
 function _insertRoleScope (roleId, scopeList, trans) {

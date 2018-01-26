@@ -19,21 +19,20 @@ function _getScope (scopeId) {
 }
 
 function _insertScope (scopes, trans) {
-  if (Array.isArray(scopes)) {
-    return scopeVo.bulkCreate(scopes, {transaction: trans}).then((array) => {
-      return Promise.map(array, (scope) => {
-        let obj = {};
-        for (let key in scope.dataValues) {
-          if (mapper[key]) {
-            obj[mapper[key]] = scope.dataValues[key];
-          }
-        }
-        return obj;
-      });
-    });
-  } else {
-    return scopeVo.create(scopes, { transaction: trans });
+  if (!Array.isArray(scopes)) {
+    scopes = [scopes];
   }
+  return scopeVo.bulkCreate(scopes, {transaction: trans}).then((array) => {
+    return Promise.map(array, (scope) => {
+      let obj = {};
+      for (let key in scope.dataValues) {
+        if (mapper[key]) {
+          obj[mapper[key]] = scope.dataValues[key];
+        }
+      }
+      return obj;
+    });
+  });
 }
 
 function _updateScope (scopeId, scopeObj, trans) {

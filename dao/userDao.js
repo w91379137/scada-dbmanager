@@ -77,23 +77,22 @@ function _getUserScopeById (userId) {
 }
 
 function _insertUser (users, trans) {
-  if (Array.isArray(users)) {
-    return userVo.bulkCreate(users, { transaction: trans, returning: true }).then((array) => {
-      return Promise.map(array, (user) => {
-        let obj = {};
-        for (let key in user.dataValues) {
-          if (mapper[key]) {
-            obj[mapper[key]] = user.dataValues[key];
-          } else if (key === 'userId') {
-            obj[key] = user.dataValues[key];
-          }
-        }
-        return obj;
-      });
-    });
-  } else {
-    return userVo.create(users, { transaction: trans });
+  if (!Array.isArray(users)) {
+    users = [users];
   }
+  return userVo.bulkCreate(users, { transaction: trans, returning: true }).then((array) => {
+    return Promise.map(array, (user) => {
+      let obj = {};
+      for (let key in user.dataValues) {
+        if (mapper[key]) {
+          obj[mapper[key]] = user.dataValues[key];
+        } else if (key === 'userId') {
+          obj[key] = user.dataValues[key];
+        }
+      }
+      return obj;
+    });
+  });
 }
 
 function _insertUserScopeById (userId, scopeList, trans) {

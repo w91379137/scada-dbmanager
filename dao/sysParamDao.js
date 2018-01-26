@@ -9,15 +9,14 @@ function _init (sequelize) {
 }
 
 function _insertParam (raws, trans) {
-  if (Array.isArray(raws)) {
-    let promises = [];
-    for (let raw of raws) {
-      promises.push(sysParamVo.create(raw, {transaction: trans}));
-    }
-    return Promise.all(promises);
-  } else {
-    return sysParamVo.create(raws, {transaction: trans});
+  if (!Array.isArray(raws)) {
+    raws = [raws];
   }
+  let promises = [];
+  for (let raw of raws) {
+    promises.push(sysParamVo.create(raw, {transaction: trans}));
+  }
+  return Promise.all(promises);
 }
 
 function _getSRPInfo () {

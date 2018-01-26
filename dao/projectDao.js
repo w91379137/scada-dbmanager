@@ -77,21 +77,20 @@ function _getProject (projectId) {
 
 function _insertProject (projects, trans) {
   // return projectVo.create(project, { transaction: trans });
-  if (Array.isArray(projects)) {
-    return projectVo.bulkCreate(projects, { transaction: trans }).then((array) => {
-      return Promise.mapp(array, (project) => {
-        let obj = {};
-        for (let key in project.dataValues) {
-          if (mapper[key]) {
-            obj[mapper[key]] = project.dataValues[key];
-          }
-        }
-        return obj;
-      });
-    });
-  } else {
-    return projectVo.create(projects, { transaction: trans });
+  if (!Array.isArray(projects)) {
+    projects = [projects];
   }
+  return projectVo.bulkCreate(projects, { transaction: trans }).then((array) => {
+    return Promise.mapp(array, (project) => {
+      let obj = {};
+      for (let key in project.dataValues) {
+        if (mapper[key]) {
+          obj[mapper[key]] = project.dataValues[key];
+        }
+      }
+      return obj;
+    });
+  });
 }
 
 function _updateProject (projectId, project, trans) {

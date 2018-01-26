@@ -133,21 +133,20 @@ function _getScada (scadaId) {
 }
 
 function _insertScada (scadas, trans) {
-  if (Array.isArray(scadas)) {
-    return scadaVo.bulkCreate(scadas, {transaction: trans}).then((array) => {
-      return Promise.map(array, (scada) => {
-        let obj = {};
-        for (let key in scada.dataValues) {
-          if (mapper[key]) {
-            obj[mapper[key]] = scada.dataValues[key];
-          }
-        }
-        return obj;
-      });
-    });
-  } else {
-    return scadaVo.create(scadas, { transaction: trans });
+  if (!Array.isArray(scadas)) {
+    scadas = [scadas];
   }
+  return scadaVo.bulkCreate(scadas, {transaction: trans}).then((array) => {
+    return Promise.map(array, (scada) => {
+      let obj = {};
+      for (let key in scada.dataValues) {
+        if (mapper[key]) {
+          obj[mapper[key]] = scada.dataValues[key];
+        }
+      }
+      return obj;
+    });
+  });
 }
 
 function _updateScada (scadaId, scada, trans) {

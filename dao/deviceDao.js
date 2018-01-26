@@ -197,21 +197,20 @@ function _getDeviceListByScadaId (scadaId, filterObj = {}) {
 }
 
 function _insertDevice (devices, t) {
-  if (Array.isArray(devices)) {
-    return deviceVo.bulkCreate(devices, { transaction: t }).then((array) => {
-      return Promise.map(array, (device) => {
-        let obj = {};
-        for (let key in device.dataValues) {
-          if (mapper[key]) {
-            obj[mapper[key]] = device.dataValues[key];
-          }
-        }
-        return obj;
-      });
-    });
-  } else {
-    return deviceVo.create(devices, { transaction: t });
+  if (!Array.isArray(devices)) {
+    devices = [devices];
   }
+  return deviceVo.bulkCreate(devices, { transaction: t }).then((array) => {
+    return Promise.map(array, (device) => {
+      let obj = {};
+      for (let key in device.dataValues) {
+        if (mapper[key]) {
+          obj[mapper[key]] = device.dataValues[key];
+        }
+      }
+      return obj;
+    });
+  });
 }
 
 function _updateDevice (scadaId, deviceId, device, t) {
