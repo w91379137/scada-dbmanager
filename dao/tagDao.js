@@ -19,6 +19,13 @@ var wholeTextTagVo = null;
 
 var _sequelize = null;
 
+var tagMapper = {};
+var analogMapper = {};
+var discreteMapper = {};
+var textMapper = {};
+var analogAlarmMapper = {};
+var discreteAlarmMapper = {};
+
 function _init (sequelize) {
   tagVo = sequelize.import('../models/tagVo');
   analogTagVo = sequelize.import('../models/analogTagVo');
@@ -32,6 +39,24 @@ function _init (sequelize) {
   wholeTextTagVo = sequelize.import('../models/wholeTextTagVo');
 
   _sequelize = sequelize;
+  for (let key in tagVo.attributes) {
+    tagMapper[tagVo.attributes[key].field] = key;
+  }
+  for (let key in analogTagVo.attributes) {
+    analogMapper[analogTagVo.attributes[key].field] = key;
+  }
+  for (let key in discreteTagVo.attributes) {
+    discreteMapper[discreteTagVo.attributes[key].field] = key;
+  }
+  for (let key in textTagVo.attributes) {
+    textMapper[textTagVo.attributes[key].field] = key;
+  }
+  for (let key in alarmAnalogVo.attributes) {
+    analogAlarmMapper[alarmAnalogVo.attributes[key].field] = key;
+  }
+  for (let key in alarmDiscreteVo.attributes) {
+    discreteAlarmMapper[alarmDiscreteVo.attributes[key].field] = key;
+  }
 }
 
 function __getAnalogTagListByScadaId (scadaId) {
@@ -484,7 +509,17 @@ function _getDiscreteList (tags = []) {
 
 function _insertTag (tags, trans) {
   if (Array.isArray(tags)) {
-    return tagVo.bulkCreate(tags, { transaction: trans });
+    return tagVo.bulkCreate(tags, { transaction: trans }).then((array) => {
+      return Promise.map(array, (tag) => {
+        let obj = {};
+        for (let key in tag.dataValues) {
+          if (tagMapper[key]) {
+            obj[tagMapper[key]] = tag.dataValues[key];
+          }
+        }
+        return obj;
+      });
+    });
   } else {
     return tagVo.create(tags, { transaction: trans });
   }
@@ -492,7 +527,17 @@ function _insertTag (tags, trans) {
 
 function _insertAnalogTag (tags, trans) {
   if (Array.isArray(tags)) {
-    return analogTagVo.bulkCreate(tags, { transaction: trans });
+    return analogTagVo.bulkCreate(tags, { transaction: trans }).then((array) => {
+      return Promise.map(array, (tag) => {
+        let obj = {};
+        for (let key in tag.dataValues) {
+          if (analogMapper[key]) {
+            obj[analogMapper[key]] = tag.dataValues[key];
+          }
+        }
+        return obj;
+      });
+    });
   } else {
     return analogTagVo.create(tags, { transaction: trans });
   }
@@ -500,7 +545,17 @@ function _insertAnalogTag (tags, trans) {
 
 function _insertDiscreteTag (tags, trans) {
   if (Array.isArray(tags)) {
-    return discreteTagVo.bulkCreate(tags, { transaction: trans });
+    return discreteTagVo.bulkCreate(tags, { transaction: trans }).then((array) => {
+      return Promise.map(array, (tag) => {
+        let obj = {};
+        for (let key in tag.dataValues) {
+          if (discreteMapper[key]) {
+            obj[discreteMapper[key]] = tag.dataValues[key];
+          }
+        }
+        return obj;
+      });
+    });
   } else {
     return discreteTagVo.create(tags, { transaction: trans });
   }
@@ -508,7 +563,17 @@ function _insertDiscreteTag (tags, trans) {
 
 function _insertTextTag (tags, trans) {
   if (Array.isArray(tags)) {
-    return textTagVo.bulkCreate(tags, { transaction: trans });
+    return textTagVo.bulkCreate(tags, { transaction: trans }).then((array) => {
+      return Promise.map(array, (tag) => {
+        let obj = {};
+        for (let key in tag.dataValues) {
+          if (discreteMapper[key]) {
+            obj[discreteMapper[key]] = tag.dataValues[key];
+          }
+        }
+        return obj;
+      });
+    });
   } else {
     return textTagVo.create(tags, { transaction: trans });
   }
@@ -516,7 +581,17 @@ function _insertTextTag (tags, trans) {
 
 function _insertAlarmAnalogTag (tags, trans) {
   if (Array.isArray(tags)) {
-    return alarmAnalogVo.bulkCreate(tags, { transaction: trans });
+    return alarmAnalogVo.bulkCreate(tags, { transaction: trans }).then((array) => {
+      return Promise.map(array, (alarm) => {
+        let obj = {};
+        for (let key in alarm.dataValues) {
+          if (analogAlarmMapper[key]) {
+            obj[analogAlarmMapper[key]] = alarm.dataValues[key];
+          }
+        }
+        return obj;
+      });
+    });
   } else {
     return alarmAnalogVo.create(tags, { transaction: trans });
   }
@@ -524,7 +599,17 @@ function _insertAlarmAnalogTag (tags, trans) {
 
 function _insertAlarmDiscreteTag (tags, trans) {
   if (Array.isArray(tags)) {
-    return alarmDiscreteVo.bulkCreate(tags, { transaction: trans });
+    return alarmDiscreteVo.bulkCreate(tags, { transaction: trans }).then((array) => {
+      return Promise.map(array, (alarm) => {
+        let obj = {};
+        for (let key in alarm.dataValues) {
+          if (discreteAlarmMapper[key]) {
+            obj[discreteAlarmMapper[key]] = alarm.dataValues[key];
+          }
+        }
+        return obj;
+      });
+    });
   } else {
     return alarmDiscreteVo.create(tags, { transaction: trans });
   }

@@ -4,10 +4,14 @@ const Promise = require('bluebird');
 
 var roleVo = null;
 var roleScopeVo = null;
+var mapper = {};
 
 function _init (sequelize) {
   roleVo = sequelize.import('../models/roleVo');
   roleScopeVo = sequelize.import('../models/roleScopeVo');
+  for (let key in roleVo.attributes) {
+    mapper[roleVo.attributes[key].field] = key;
+  }
 }
 
 function _getRoleList () {
@@ -40,8 +44,22 @@ function _getRole (roleId) {
   });
 }
 
-function _insertRole (roleObj, trans) {
-  return roleVo.create(roleObj, { transaction: trans });
+function _insertRole (roles, trans) {
+  if (Array.isArray(roles)) {
+    return roleVo.bulkCreate(roles, {transaction: trans}).then((array) => {
+      return Promise.map(array, (role) => {
+        let obj = {};
+        for (let key in role.dataValues) {
+          if (mapper[key]) {
+            obj[mapper[key]] = role.dataValues[key];
+          }
+        }
+        return obj;
+      });
+    });
+  } else {
+    return roleVo.create(roles, { transaction: trans });
+  }
 }
 
 function _insertRoleScope (roleId, scopeList, trans) {

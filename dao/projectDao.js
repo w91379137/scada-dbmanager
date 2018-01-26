@@ -9,12 +9,16 @@ var scadaVo = null;
 var userAllowDeviceVo = null;
 var scadaDao = require('./scadaDao');
 var _sequelize = null;
+var mapper = {};
 
 function _init (sequelize) {
   projectVo = sequelize.import('../models/projectVo');
   scadaVo = sequelize.import('../models/scadaVo');
   userAllowDeviceVo = sequelize.import('../models/userAllowDeviceVo');
   _sequelize = sequelize;
+  for (let key in projectVo.attributes) {
+    mapper[projectVo.attributes[key].field] = key;
+  }
 }
 
 /**
@@ -74,7 +78,17 @@ function _getProject (projectId) {
 function _insertProject (projects, trans) {
   // return projectVo.create(project, { transaction: trans });
   if (Array.isArray(projects)) {
-    return projectVo.bulkCreate(projects, { transaction: trans });
+    return projectVo.bulkCreate(projects, { transaction: trans }).then((array) => {
+      return Promise.mapp(array, (project) => {
+        let obj = {};
+        for (let key in project.dataValues) {
+          if (mapper[key]) {
+            obj[mapper[key]] = project.dataValues[key];
+          }
+        }
+        return obj;
+      });
+    });
   } else {
     return projectVo.create(projects, { transaction: trans });
   }

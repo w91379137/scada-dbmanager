@@ -8,12 +8,16 @@ var userVo = null;
 var userScopeVo = null;
 var userAllowDeviceVo = null;
 var _sequelize = null;
+var mapper = {};
 
 function _init (sequelize) {
   userVo = sequelize.import('../models/userVo');
   userScopeVo = sequelize.import('../models/userScopeVo');
   userAllowDeviceVo = sequelize.import('../models/userAllowDeviceVo');
   _sequelize = sequelize;
+  for (let key in userVo.attributes) {
+    mapper[userVo.attributes[key].field] = key;
+  }
 }
 /**
  * @param {Object} filterObj
@@ -56,12 +60,12 @@ function _getUserById (userId) {
 }
 
 function _getUserByName (userName) {
-  return userVo.findOne({where:{userName}}).then((user) => {
-    if(!user){
+  return userVo.findOne({where: {userName}}).then((user) => {
+    if (!user) {
       return Promise.resolve(user);
     }
     user = user.dataValues;
-    return userScopeVo.findAll({where:{userId: user.userId}}).then((scopes) => {
+    return userScopeVo.findAll({where: {userId: user.userId}}).then((scopes) => {
       user.scope = [].concat(scopes.map((s) => s.scopeId));
       return Promise.resolve(user);
     });
@@ -74,7 +78,19 @@ function _getUserScopeById (userId) {
 
 function _insertUser (users, trans) {
   if (Array.isArray(users)) {
-    return userVo.bulkCreate(users, { transaction: trans });
+    return userVo.bulkCreate(users, { transaction: trans, returning: true }).then((array) => {
+      return Promise.map(array, (user) => {
+        let obj = {};
+        for (let key in user.dataValues) {
+          if (mapper[key]) {
+            obj[mapper[key]] = user.dataValues[key];
+          } else if (key === 'userId') {
+            obj[key] = user.dataValues[key];
+          }
+        }
+        return obj;
+      });
+    });
   } else {
     return userVo.create(users, { transaction: trans });
   }

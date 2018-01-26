@@ -10,6 +10,7 @@ var deviceVo = null;
 var structModelVo = null;
 var tagDao = require('./tagDao');
 var _sequelize = null;
+var mapper = {};
 
 function _init (sequelize) {
   scadaVo = sequelize.import('../models/scadaVo');
@@ -17,6 +18,9 @@ function _init (sequelize) {
   userAllowDeviceVo = sequelize.import('../models/userAllowDeviceVo');
   structModelVo = sequelize.import('../models/structModelVo');
   _sequelize = sequelize;
+  for (let key in scadaVo.attributes) {
+    mapper[scadaVo.attributes[key].field] = key;
+  }
 }
 
 /**
@@ -130,7 +134,17 @@ function _getScada (scadaId) {
 
 function _insertScada (scadas, trans) {
   if (Array.isArray(scadas)) {
-    return scadaVo.bulkCreate(scadas, { transaction: trans });
+    return scadaVo.bulkCreate(scadas, {transaction: trans}).then((array) => {
+      return Promise.map(array, (scada) => {
+        let obj = {};
+        for (let key in scada.dataValues) {
+          if (mapper[key]) {
+            obj[mapper[key]] = scada.dataValues[key];
+          }
+        }
+        return obj;
+      });
+    });
   } else {
     return scadaVo.create(scadas, { transaction: trans });
   }

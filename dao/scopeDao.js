@@ -1,9 +1,13 @@
 'use strict';
 
 var scopeVo = null;
+var mapper = {};
 
 function _init (sequelize) {
   scopeVo = sequelize.import('../models/scopeVo');
+  for (let key in scopeVo.attributes) {
+    mapper[scopeVo.attributes[key].field] = key;
+  }
 }
 
 function _getScopeList () {
@@ -14,8 +18,22 @@ function _getScope (scopeId) {
   return scopeVo.findOne({ where: {scopeId} });
 }
 
-function _insertScope (scopeObj, trans) {
-  return scopeVo.create(scopeObj, { transaction: trans });
+function _insertScope (scopes, trans) {
+  if (Array.isArray(scopes)) {
+    return scopeVo.bulkCreate(scopes, {transaction: trans}).then((array) => {
+      return Promise.map(array, (scope) => {
+        let obj = {};
+        for (let key in scope.dataValues) {
+          if (mapper[key]) {
+            obj[mapper[key]] = scope.dataValues[key];
+          }
+        }
+        return obj;
+      });
+    });
+  } else {
+    return scopeVo.create(scopes, { transaction: trans });
+  }
 }
 
 function _updateScope (scopeId, scopeObj, trans) {
