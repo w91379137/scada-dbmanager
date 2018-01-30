@@ -81,7 +81,7 @@ function _insertProject (projects, trans) {
     projects = [projects];
   }
   return projectVo.bulkCreate(projects, { transaction: trans }).then((array) => {
-    return Promise.mapp(array, (project) => {
+    return Promise.map(array, (project) => {
       let obj = {};
       for (let key in project.dataValues) {
         if (mapper[key]) {
