@@ -23,8 +23,8 @@ function _init (postgresConf, option = {}) {
     host: postgresConf.host,
     dialect: 'postgres',
     pool: {
-      max: option.max || 5,
-      min: option.min || 1,
+      max: option.pool.max || 5,
+      min: option.pool.min || 1,
       idle: 10000
     },
     quoteIdentifiers: false,
