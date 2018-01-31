@@ -1,3 +1,7 @@
+# [1.0.23]
+## Added
+- Postgres connection setting
+
 # [1.0.22] - 2018-01-24
 ## Added
 - tagDao

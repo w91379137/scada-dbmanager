@@ -18,13 +18,13 @@ function _getConn () {
   return sequelize;
 }
 
-function _init (postgresConf) {
+function _init (postgresConf, option = {}) {
   sequelize = new Sequelize(postgresConf.database, postgresConf.username, postgresConf.password, {
     host: postgresConf.host,
     dialect: 'postgres',
     pool: {
-      max: 10,
-      min: 5,
+      max: option.max || 5,
+      min: option.min || 1,
       idle: 10000
     },
     quoteIdentifiers: false,
