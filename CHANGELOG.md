@@ -2,6 +2,9 @@
 ## Added
 - Postgres connection setting
 
+## Fixed
+- createUser bug
+
 # [1.0.22] - 2018-01-24
 ## Added
 - tagDao

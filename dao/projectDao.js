@@ -76,7 +76,6 @@ function _getProject (projectId) {
 }
 
 function _insertProject (projects, trans) {
-  // return projectVo.create(project, { transaction: trans });
   if (!Array.isArray(projects)) {
     projects = [projects];
   }
