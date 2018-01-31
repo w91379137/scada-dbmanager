@@ -39,35 +39,75 @@ function _getUserList (filterObj = {}) {
   if (filterObj.userName) {
     filter.where = {userName: filterObj.userName};
   }
-  return userVo.findAndCountAll(filter);
+  return userVo.findAndCountAll(filter).then((result) => {
+    result.rows = result.rows.map((user) => user.dataValues);
+    result.rows = result.rows.map((user) => {
+      if (user.createUser) {
+        user.createUser = result.rows.find((u) => u.userId === user.createUser).userName;
+      }
+      return user;
+    });
+    return result;
+  });
 }
 
 function _getUserById (userId) {
-  let promises = [];
-  promises.push(userVo.findOne({ where: {userId} }));
-  promises.push(userScopeVo.findAll({ where: {userId} }));
-  return Promise.all(promises).then((result) => {
-    let response = {};
-    for (let res of result) {
-      if (Array.isArray(res)) {
-        response.scope = res.map((r) => r.scopeId);
-      } else {
-        response = Object.assign(response, res.dataValues);
+  let sql = squel.select().from('scada.user_info', 'UserInfo')
+  .left_join('scada.user_scope', 'UserScope', squel.expr().and('UserInfo.user_id = UserScope.user_id'))
+  .left_join('scada.user_info', 'CreateUserInfo', squel.expr().and('UserInfo.create_user = CreateUserInfo.user_id'))
+  .where('UserInfo.user_id = ?', userId);
+
+  for (let idx in userVo.attributes) {
+    sql.field('UserInfo.' + userVo.attributes[idx].field);
+  }
+  sql.field('CreateUserInfo.user_name', 'create');
+  sql.field('UserScope.scope_id', 'scope');
+
+  return new Promise((resolve, reject) => {
+    _sequelize.query(sql.toString(), { type: _sequelize.QueryTypes.SELECT }).then((rows) => {
+      let user = {scope: []};
+      for (let row of rows) {
+        for (let key in mapper) {
+          user[mapper[key]] = row[key];
+        }
+        if (row.scope) {
+          user.scope.push(row.scope);
+        }
       }
-    }
-    return Promise.resolve(response);
+      return resolve(user);
+    }).catch((err) => {
+      reject(err);
+    });
   });
 }
 
 function _getUserByName (userName) {
-  return userVo.findOne({where: {userName}}).then((user) => {
-    if (!user) {
-      return Promise.resolve(user);
-    }
-    user = user.dataValues;
-    return userScopeVo.findAll({where: {userId: user.userId}}).then((scopes) => {
-      user.scope = [].concat(scopes.map((s) => s.scopeId));
-      return Promise.resolve(user);
+  let sql = squel.select().from('scada.user_info', 'UserInfo')
+  .left_join('scada.user_scope', 'UserScope', squel.expr().and('UserInfo.user_id = UserScope.user_id'))
+  .left_join('scada.user_info', 'CreateUserInfo', squel.expr().and('UserInfo.create_user = CreateUserInfo.user_id'))
+  .where('UserInfo.user_name = ?', userName);
+
+  for (let idx in userVo.attributes) {
+    sql.field('UserInfo.' + userVo.attributes[idx].field);
+  }
+  sql.field('CreateUserInfo.user_name', 'create');
+  sql.field('UserScope.scope_id', 'scope');
+
+  return new Promise((resolve, reject) => {
+    _sequelize.query(sql.toString(), { type: _sequelize.QueryTypes.SELECT }).then((rows) => {
+      let user = {scope: []};
+      for (let row of rows) {
+        for (let key in mapper) {
+          user[mapper[key]] = row[key];
+        }
+        if (row.scope) {
+          user.scope.push(row.scope);
+        }
+        user.createUser = row.create;
+      }
+      return resolve(user);
+    }).catch((err) => {
+      reject(err);
     });
   });
 }
