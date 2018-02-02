@@ -1,7 +1,6 @@
 'use strict';
 
 const Promise = require('bluebird');
-const Utils = require('../common/utils');
 var squel = require('squel').useFlavour('postgres');
 
 var userVo = null;
@@ -65,7 +64,11 @@ function _getUserById (userId) {
 
   return new Promise((resolve, reject) => {
     _sequelize.query(sql.toString(), { type: _sequelize.QueryTypes.SELECT }).then((rows) => {
-      let user = {scope: []};
+      let user = null;
+      if (rows.length === 0) {
+        return resolve(user);
+      }
+      user = {scope: []};
       for (let row of rows) {
         for (let key in mapper) {
           user[mapper[key]] = row[key];
@@ -95,7 +98,11 @@ function _getUserByName (userName) {
 
   return new Promise((resolve, reject) => {
     _sequelize.query(sql.toString(), { type: _sequelize.QueryTypes.SELECT }).then((rows) => {
-      let user = {scope: []};
+      let user = null;
+      if (rows.length === 0) {
+        return resolve(user);
+      }
+      user = {scope: []};
       for (let row of rows) {
         for (let key in mapper) {
           user[mapper[key]] = row[key];
