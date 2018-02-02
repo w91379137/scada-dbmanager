@@ -1,3 +1,8 @@
+# [1.0.25]
+## Fixed
+- createUser bug
+- SysParams bug
+
 # [1.0.24]
 ## Fixed
 - create user bug
