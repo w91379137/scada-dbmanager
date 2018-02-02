@@ -42,7 +42,8 @@ function _getUserList (filterObj = {}) {
     result.rows = result.rows.map((user) => user.dataValues);
     result.rows = result.rows.map((user) => {
       if (user.createUser) {
-        user.createUser = result.rows.find((u) => u.userId === user.createUser).userName;
+        let createUser = result.rows.find((u) => u.userId === user.createUser);
+        user.createUser = createUser ? createUser.userName : null;
       }
       return user;
     });
@@ -178,8 +179,10 @@ function _updateUserScopeById (userId, scopeList, trans) {
 
 function _deleteUserById (userId, trans) {
   return userVo.destroy({ where: { userId }, transaction: trans }).then((c) => {
-    return userScopeVo.destroy({ where: {userId}, transaction: trans }).then((result) => {
-      return userAllowDeviceVo.destroy({ where: {userId}, transaction: trans });
+    return userVo.update({createUser: null}, {where: {createUser: userId}}).then(() => {
+      return userScopeVo.destroy({ where: {userId}, transaction: trans }).then((result) => {
+        return userAllowDeviceVo.destroy({ where: {userId}, transaction: trans });
+      });
     });
   });
 }
