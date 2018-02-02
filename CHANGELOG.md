@@ -1,3 +1,7 @@
+# [1.0.24]
+## Fixed
+- create user bug
+
 # [1.0.23]
 ## Added
 - Postgres connection setting
