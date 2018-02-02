@@ -3,20 +3,30 @@
 const Promise = require('bluebird');
 
 var sysParamVo = null;
+var mapper = {};
 
 function _init (sequelize) {
   sysParamVo = sequelize.import('../models/sysParamVo');
+  for (let key in sysParamVo.attributes) {
+    mapper[sysParamVo.attributes[key].field] = key;
+  }
 }
 
 function _insertParam (raws, trans) {
   if (!Array.isArray(raws)) {
     raws = [raws];
   }
-  let promises = [];
-  for (let raw of raws) {
-    promises.push(sysParamVo.create(raw, {transaction: trans}));
-  }
-  return Promise.all(promises);
+  return sysParamVo.bulkCreate(raws, { transaction: trans }).then((array) => {
+    return Promise.map(array, (user) => {
+      let obj = {};
+      for (let key in user.dataValues) {
+        if (mapper[key]) {
+          obj[mapper[key]] = user.dataValues[key];
+        }
+      }
+      return obj;
+    });
+  });
 }
 
 function _getSRPInfo () {
