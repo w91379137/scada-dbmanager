@@ -14,9 +14,9 @@ module.exports = function (sequelize, dataTypes) {
       allowNull: false,
       primaryKey: true
     },
-    eventDescription: {
+    description: {
       type: dataTypes.STRING(256),
-      field: 'event_description',
+      field: 'description',
       allowNull: true,
       primaryKey: false
     },
