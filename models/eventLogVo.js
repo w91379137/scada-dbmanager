@@ -63,7 +63,7 @@ module.exports = function (sequelize, dataTypes) {
       primaryKey: false
     },
     sampleUnit: {
-      type: dataTypes.STRING(36),
+      type: dataTypes.INTEGER,
       field: 'sample_unit',
       allowNull: false,
       primaryKey: false
