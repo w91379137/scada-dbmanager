@@ -542,7 +542,7 @@ function _insertAnalogTag (tags, trans) {
 }
 
 function _insertDiscreteTag (tags, trans) {
-  if (Array.isArray(tags)) {
+  if (!Array.isArray(tags)) {
     tags = [tags];
   }
   return discreteTagVo.bulkCreate(tags, { transaction: trans }).then((array) => {
