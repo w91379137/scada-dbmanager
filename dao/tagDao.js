@@ -559,57 +559,57 @@ function _insertDiscreteTag (tags, trans) {
 }
 
 function _insertTextTag (tags, trans) {
-  if (Array.isArray(tags)) {
-    return textTagVo.bulkCreate(tags, { transaction: trans }).then((array) => {
-      return Promise.map(array, (tag) => {
-        let obj = {};
-        for (let key in tag.dataValues) {
-          if (discreteMapper[key]) {
-            obj[discreteMapper[key]] = tag.dataValues[key];
-          }
-        }
-        return obj;
-      });
-    });
-  } else {
-    return textTagVo.create(tags, { transaction: trans });
+  if (!Array.isArray(tags)) {
+    tags = [tags];
   }
+
+  return textTagVo.bulkCreate(tags, { transaction: trans }).then((array) => {
+    return Promise.map(array, (tag) => {
+      let obj = {};
+      for (let key in tag.dataValues) {
+        if (discreteMapper[key]) {
+          obj[discreteMapper[key]] = tag.dataValues[key];
+        }
+      }
+      return obj;
+    });
+  });
 }
 
 function _insertAlarmAnalogTag (tags, trans) {
-  if (Array.isArray(tags)) {
-    return alarmAnalogVo.bulkCreate(tags, { transaction: trans }).then((array) => {
-      return Promise.map(array, (alarm) => {
-        let obj = {};
-        for (let key in alarm.dataValues) {
-          if (analogAlarmMapper[key]) {
-            obj[analogAlarmMapper[key]] = alarm.dataValues[key];
-          }
-        }
-        return obj;
-      });
-    });
-  } else {
-    return alarmAnalogVo.create(tags, { transaction: trans });
+  if (!Array.isArray(tags)) {
+    tags = [tags];
   }
+
+  return alarmAnalogVo.bulkCreate(tags, { transaction: trans }).then((array) => {
+    return Promise.map(array, (alarm) => {
+      let obj = {};
+      for (let key in alarm.dataValues) {
+        if (analogAlarmMapper[key]) {
+          obj[analogAlarmMapper[key]] = alarm.dataValues[key];
+        }
+      }
+      return obj;
+    });
+  });
 }
 
 function _insertAlarmDiscreteTag (tags, trans) {
-  if (Array.isArray(tags)) {
-    return alarmDiscreteVo.bulkCreate(tags, { transaction: trans }).then((array) => {
-      return Promise.map(array, (alarm) => {
-        let obj = {};
-        for (let key in alarm.dataValues) {
-          if (discreteAlarmMapper[key]) {
-            obj[discreteAlarmMapper[key]] = alarm.dataValues[key];
-          }
-        }
-        return obj;
-      });
-    });
-  } else {
-    return alarmDiscreteVo.create(tags, { transaction: trans });
+  if (!Array.isArray(tags)) {
+    tags = [tags];
   }
+
+  return alarmDiscreteVo.bulkCreate(tags, { transaction: trans }).then((array) => {
+    return Promise.map(array, (alarm) => {
+      let obj = {};
+      for (let key in alarm.dataValues) {
+        if (discreteAlarmMapper[key]) {
+          obj[discreteAlarmMapper[key]] = alarm.dataValues[key];
+        }
+      }
+      return obj;
+    });
+  });
 }
 
 function _updateTag (scadaId, deviceId, tagName, tag, trans) {
