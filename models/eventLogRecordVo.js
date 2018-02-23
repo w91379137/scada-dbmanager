@@ -16,13 +16,13 @@ module.exports = function (sequelize, dataTypes) {
     },
     deviceId: {
       type: dataTypes.STRING(256),
-      field: 'record_device_id',
+      field: 'device_id',
       allowNull: false,
       primaryKey: true
     },
     tagName: {
       type: dataTypes.STRING(128),
-      field: 'record_tag_name',
+      field: 'tag_name',
       allowNull: false,
       primaryKey: true
     }
