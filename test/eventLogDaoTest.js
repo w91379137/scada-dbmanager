@@ -14,6 +14,7 @@ const psqlConfig = {
 
 DBManager.init(psqlConfig);
 var eventLogDao = DBManager.EventLogDao;
+// let scadaDao = DBManager.scadaDao;
 
 let projectId = 'reqwer';
 let scadaId = '71c957bc-b5b1-4e02-8087-b06cc44baf74';
@@ -45,13 +46,22 @@ let eventLogInfo = {
   ]
 };
 
-DBManager.conn().transaction().then(function (trans) {
-  return eventLogDao.insertEventLog(eventLogInfo, trans).then(function (res) {
-    return trans.commit();
-  }).catch(function (err) {
-    if (err) {
-      console.log(err);
-      return trans.rollback();
-    }
-  });
+// DBManager.conn().transaction().then(function (trans) {
+//   return eventLogDao.insertEventLog(eventLogInfo, trans).then(function (res) {
+//     return trans.commit();
+//   }).catch(function (err) {
+//     if (err) {
+//       console.log(err);
+//       return trans.rollback();
+//     }
+//   });
+// });
+
+
+eventLogDao.getEventLogList()
+.then((result) => {
+  console.log(result);
+})
+.catch((error) => {
+  console.error(error);
 });

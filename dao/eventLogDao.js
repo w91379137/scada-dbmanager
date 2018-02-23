@@ -86,7 +86,46 @@ function _insertEventLog (eventLogObj, trans) {
   });
 }
 
+function _getEventLogList (filterObj = {}) {
+  let offset = filterObj.offset ? filterObj.offset : 0;
+  let limit = filterObj.limit ? filterObj.limit : null;
+  let sortby = filterObj.sortby ? filterObj.sortby : 'scadaId';
+  let order = filterObj.order !== null ? filterObj.order : true;
+  let detail = filterObj.detail ? filterObj.detail : false;
+
+  let sql = squel.select().from('scada.event_log_list', 'EventLog');
+  if (detail) {
+    for (let idx in eventLogVo.attributes) {
+      sql.field('EventLog.' + eventLogVo.attributes[idx].field, idx);
+    }
+  } else {
+    sql.field('EventLog.scada_id', 'scadaId');
+    sql.field('EventLog.event_name', 'eventName');
+  }
+  sql.distinct();
+  if (filterObj.userName) {
+    // sql.join('scada.user_allow_device', 'UserAllowDevice', squel.expr().and('Scada.proj_id = UserAllowDevice.proj_id').and('Scada.scada_id = UserAllowDevice.scada_id'));
+    // sql.join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id'));
+    // sql.where('Userinfo.user_name = ? ', filterObj.userName);
+  }
+  for (let idx in eventLogVo.attributes) {
+    let key = eventLogVo.attributes[idx];
+    if (!Utils.isNullOrUndefined(filterObj[idx])) {
+      sql.where('EventLog.' + key.field + ' LIKE ?', filterObj[idx]);
+    }
+  }
+  sql.order(sortby, order);
+  return new Promise((resolve, reject) => {
+    _sequelize.query(sql.toString(), { type: _sequelize.QueryTypes.SELECT, model: eventLogVo }).then((raws) => {
+      resolve({count: raws.length, rows: raws.slice(offset, limit ? limit + offset : raws.length)});
+    }).catch((err) => {
+      reject(err);
+    });
+  });
+}
+
 module.exports = {
   init: _init,
-  insertEventLog: _insertEventLog
+  insertEventLog: _insertEventLog,
+  getEventLogList: _getEventLogList
 };
