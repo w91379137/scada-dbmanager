@@ -46,23 +46,44 @@ function _init (sequelize) {
  */
 
 function _insertEventLog (eventLogObj, trans) {
-  // 取出紀錄測點和事件測點共用的資料，例如scada_id, event_name
-  // 先把紀錄測點從eventLogObj切割出來
-  // 判斷type是什麼，
-  if (!Array.isArray(scadas)) {
-    scadas = [scadas];
+  let eventName = eventLogObj.eventName;
+  let scadaId = eventLogObj.scadaId;
+
+  // clone object
+  let eventLogs = Object.assign({}, eventLogObj);
+  delete eventLogs.eventLogRecord;
+
+  let eventLogRecords = eventLogObj.eventLogRecord;
+
+  for (let record of eventLogRecords) {
+    record.eventName = eventName;
+    record.scadaId = scadaId;
   }
-  // return scadaVo.bulkCreate(scadas, {transaction: trans}).then((array) => {
-  //   return Promise.map(array, (scada) => {
-  //     let obj = {};
-  //     for (let key in scada.dataValues) {
-  //       if (mapper[key]) {
-  //         obj[mapper[key]] = scada.dataValues[key];
-  //       }
-  //     }
-  //     return obj;
-  //   });
-  // });
+
+  // create EventLog and EventLogRecord
+  return eventLogVo.create(eventLogs, {transaction: trans}).then((_eventLog) => {
+    return eventLogRecordVo.bulkCreate(eventLogRecords, {transaction: trans}).then((records) => {
+      // convert the key name to match model field keys, only bulkCreate need to do that.
+      let _records = records.map((_record) => {
+        let obj = {};
+        for (let key in _record.dataValues) {
+          if (eventLogRecordMapper[key]) {
+            obj[eventLogRecordMapper[key]] = _record.dataValues[key];
+          }
+        }
+        return obj;
+      });
+
+      let returnEventLog = _eventLog.dataValues;
+      returnEventLog.eventLogRecord = _records;
+
+      return Promise.resolve(returnEventLog);
+    }).catch((err) => {
+      return Promise.reject(err);
+    });
+  }).catch((err) => {
+    return Promise.reject(err);
+  });
 }
 
 module.exports = {
