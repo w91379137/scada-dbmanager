@@ -36,12 +36,12 @@ let eventLogInfo = {
   "sampleAmount": 0,
   "eventLogRecord": [
     {
-      "recordDeviceId": "string",
-      "recordTagName": "string"
+      "deviceId": "string",
+      "tagName": "string"
     },
     {
-      "recordDeviceId": "string1",
-      "recordTagName": "string1"
+      "deviceId": "string1",
+      "tagName": "string1"
     }
   ]
 };

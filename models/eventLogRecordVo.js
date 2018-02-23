@@ -14,13 +14,13 @@ module.exports = function (sequelize, dataTypes) {
       allowNull: false,
       primaryKey: true
     },
-    recordDeviceId: {
+    deviceId: {
       type: dataTypes.STRING(256),
       field: 'record_device_id',
       allowNull: false,
       primaryKey: true
     },
-    recordTagName: {
+    tagName: {
       type: dataTypes.STRING(128),
       field: 'record_tag_name',
       allowNull: false,
