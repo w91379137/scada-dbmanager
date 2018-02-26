@@ -111,12 +111,11 @@ function _getEventLogList (filterObj = {}) {
 
   let sql = squel.select().from('scada.event_log_list', 'EventLog');
 
-
-  for (let idx in eventLogVo.attributes) {
-    sql.field('EventLog.' + eventLogVo.attributes[idx].field, idx);
-  }
-
   if (detail) {
+    for (let idx in eventLogVo.attributes) {
+      sql.field('EventLog.' + eventLogVo.attributes[idx].field, idx);
+    }
+
     sql.field('array_agg(jsonb_build_object(\'deviceId\', EventLogRecord.device_id, \'tagName\', EventLogRecord.tag_name))', 'eventLogRecord');
     sql.distinct();
 
@@ -126,6 +125,9 @@ function _getEventLogList (filterObj = {}) {
     sql.group('EventLog.scada_id');
     sql.group('EventLog.event_name');
   } else {
+    sql.field('EventLog.event_name', 'eventName');
+    sql.field('EventLog.scada_id', 'scadaId');
+    sql.field('EventLog.description', 'description');
     sql.distinct();
   }
 
