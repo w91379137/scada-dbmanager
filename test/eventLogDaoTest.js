@@ -53,7 +53,8 @@ let eventLogInfo = {
 
 let filterObj = {
   scadaId: 'string',
-  eventName: 'string1'
+  eventName: 'string1',
+  detail: false
 };
 
 eventLogDao.getEventLogList(filterObj)

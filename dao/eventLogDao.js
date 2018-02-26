@@ -29,16 +29,23 @@ function _init (sequelize) {
 }
 
 /**
- * @param {Object} filterObj
- * @param {Integer} filterObj.offset: starting index
- * @param {Integer} filterObj.limit: data retrived
- * @param {String} filterObj.scadaName: filter scada name
- * @param {String} filterObj.description: filter scada desc
- * @param {String} filterObj.sortby: sort properties
- * @param {String} filterObj.order: order asc or not
- * @param {Boolean} filterObj.detail: select id & name only
- * @param {String} filterObj.userName: filter the scadas that userName can access
- *  }
+ * @param {Object} eventLogObj
+ * @param {String} eventLogObj.eventName: eventName
+ * @param {String} eventLogObj.scadaId: scadaId
+ * @param {String} eventLogObj.description: description
+ * @param {String} eventLogObj.deviceId: deviceId
+ * @param {String} eventLogObj.tagName: tagName
+ * @param {Integer} eventLogObj.eventType: eventType
+ * @param {Double} eventLogObj.refValue: refValue
+ * @param {String} eventLogObj.refDeviceId: refDeviceId
+ * @param {String} eventLogObj.refTagName: refTagName
+ * @param {Integer} eventLogObj.sampleInterval: sampleInterval
+ * @param {Integer} eventLogObj.sampleUnit: sampleUnit
+ * @param {Integer} eventLogObj.sampleAmount: sampleAmount
+ * @param {Array.<Object>} eventLogObj.eventLogRecord: eventLogRecord
+ * @param {String} eventLogObj.eventLogRecord.deviceId: deviceId
+ * @param {String} eventLogObj.eventLogRecord.tagName: tagName
+ * }
  */
 
 function _insertEventLog (eventLogObj, trans) {
@@ -82,25 +89,47 @@ function _insertEventLog (eventLogObj, trans) {
   });
 }
 
+/**
+ * @param {Object} filterObj
+ * @param {Integer} filterObj.offset: starting index
+ * @param {Integer} filterObj.limit: data retrived
+ * @param {String} filterObj.scadaId: scadaId of event
+ * @param {String} filterObj.eventName: eventName of event
+ * @param {String} filterObj.sortby: sort properties
+ * @param {String} filterObj.order: order asc or not
+ * @param {Boolean} filterObj.detail: select id & name only
+ * @param {String} filterObj.userName: filter the scadas that userName can access
+ *  }
+ */
+
 function _getEventLogList (filterObj = {}) {
   let offset = filterObj.offset ? filterObj.offset : 0;
   let limit = filterObj.limit ? filterObj.limit : null;
   let sortby = filterObj.sortby ? filterObj.sortby : 'scadaId';
   let order = filterObj.order !== null ? filterObj.order : true;
+  let detail = filterObj.detail ? filterObj.detail : false;
 
   let sql = squel.select().from('scada.event_log_list', 'EventLog');
+
+
   for (let idx in eventLogVo.attributes) {
     sql.field('EventLog.' + eventLogVo.attributes[idx].field, idx);
   }
 
-  sql.field('array_agg(jsonb_build_object(\'deviceId\', EventLogRecord.device_id, \'tagName\', EventLogRecord.tag_name))', 'eventLogRecord');
-  sql.distinct();
+  if (detail) {
+    sql.field('array_agg(jsonb_build_object(\'deviceId\', EventLogRecord.device_id, \'tagName\', EventLogRecord.tag_name))', 'eventLogRecord');
+    sql.distinct();
 
-  sql.left_join('scada.event_log_record', 'EventLogRecord', squel.expr()
-    .and('EventLog.scada_id = EventLogRecord.scada_id')
-    .and('EventLog.event_name = EventLogRecord.event_name'));
-  sql.group('EventLog.scada_id');
-  sql.group('EventLog.event_name');
+    sql.left_join('scada.event_log_record', 'EventLogRecord', squel.expr()
+      .and('EventLog.scada_id = EventLogRecord.scada_id')
+      .and('EventLog.event_name = EventLogRecord.event_name'));
+    sql.group('EventLog.scada_id');
+    sql.group('EventLog.event_name');
+  } else {
+    sql.distinct();
+  }
+
+ 
   if (filterObj.userName) {
     // TODO: check user (permission validation)
     // sql.join('scada.user_allow_device', 'UserAllowDevice', squel.expr().and('Scada.proj_id = UserAllowDevice.proj_id').and('Scada.scada_id = UserAllowDevice.scada_id'));
@@ -117,7 +146,7 @@ function _getEventLogList (filterObj = {}) {
   return new Promise((resolve, reject) => {
     _sequelize.query(sql.toString(), { type: _sequelize.QueryTypes.SELECT, model: eventLogSelectVo }).then((raws) => {
       raws.map((raw, idx) => {
-        if (!raw.eventLogRecord[0].tagName || !raw.eventLogRecord[0].deviceId) {
+        if (!raw.eventLogRecord || !raw.eventLogRecord[0].tagName || !raw.eventLogRecord[0].deviceId) {
           // if event doesn't has log records, delete eventLogRecord field from result obj.
           delete raws[idx].dataValues.eventLogRecord;
         }
