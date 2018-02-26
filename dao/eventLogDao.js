@@ -70,7 +70,7 @@ function _insertEventLog (eventLogObj, trans) {
       let _records = records.map((_record) => {
         let obj = {};
         for (let key in _record.dataValues) {
-          if (eventLogRecordMapper[key]) {
+          if (eventLogRecordMapper[key] && (key === 'device_id' || key === 'tag_name')) {
             obj[eventLogRecordMapper[key]] = _record.dataValues[key];
           }
         }
