@@ -6,20 +6,16 @@ let squel = require('squel').useFlavour('postgres');
 
 let eventLogVo = null;
 let eventLogRecordVo = null;
-// var scadaVo = null;
-// var userAllowDeviceVo = null;
-// var deviceVo = null;
-// var structModelVo = null;
-// var tagDao = require('./tagDao');
+let eventLogSelectVo = null;
+
 let _sequelize = null;
 let eventLogMapper = {};
 let eventLogRecordMapper = {};
 
 function _init (sequelize) {
-  // scadaVo = sequelize.import('../models/scadaVo');
-  // deviceVo = sequelize.import('../models/deviceVo');
   eventLogVo = sequelize.import('../models/eventLogVo');
   eventLogRecordVo = sequelize.import('../models/eventLogRecordVo');
+  eventLogSelectVo = sequelize.import('../models/eventLogSelectVo');
 
   _sequelize = sequelize;
 
@@ -102,8 +98,16 @@ function _getEventLogList (filterObj = {}) {
     sql.field('EventLog.scada_id', 'scadaId');
     sql.field('EventLog.event_name', 'eventName');
   }
+  sql.field('array_agg(jsonb_build_object(\'deviceId\', EventLogRecord.device_id, \'tagName\', EventLogRecord.tag_name))', 'eventLogRecord');
   sql.distinct();
+
+  sql.left_join('scada.event_log_record', 'EventLogRecord', squel.expr()
+    .and('EventLog.scada_id = EventLogRecord.scada_id')
+    .and('EventLog.event_name = EventLogRecord.event_name'));
+  sql.group('EventLog.scada_id');
+  sql.group('EventLog.event_name');
   if (filterObj.userName) {
+    // TODO: check user (permission validation)
     // sql.join('scada.user_allow_device', 'UserAllowDevice', squel.expr().and('Scada.proj_id = UserAllowDevice.proj_id').and('Scada.scada_id = UserAllowDevice.scada_id'));
     // sql.join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id'));
     // sql.where('Userinfo.user_name = ? ', filterObj.userName);
@@ -116,7 +120,14 @@ function _getEventLogList (filterObj = {}) {
   }
   sql.order(sortby, order);
   return new Promise((resolve, reject) => {
-    _sequelize.query(sql.toString(), { type: _sequelize.QueryTypes.SELECT, model: eventLogVo }).then((raws) => {
+    _sequelize.query(sql.toString(), { type: _sequelize.QueryTypes.SELECT, model: eventLogSelectVo }).then((raws) => {
+      raws.map((raw, idx) => {
+        if (!raw.eventLogRecord[0].tagName || !raw.eventLogRecord[0].deviceId) {
+          // if event doesn't has log records, delete eventLogRecord field from result obj.
+          delete raws[idx].dataValues.eventLogRecord;
+        }
+      });
+
       resolve({count: raws.length, rows: raws.slice(offset, limit ? limit + offset : raws.length)});
     }).catch((err) => {
       reject(err);

@@ -1,0 +1,85 @@
+'use strict';
+
+module.exports = function (sequelize, dataTypes) {
+  return sequelize.define('event_log_select', {
+    eventName: {
+      type: dataTypes.STRING(128),
+      field: 'event_name',
+      allowNull: false,
+      primaryKey: true
+    },
+    scadaId: {
+      type: dataTypes.STRING(36),
+      field: 'scada_id',
+      allowNull: false,
+      primaryKey: true
+    },
+    description: {
+      type: dataTypes.STRING(256),
+      field: 'description',
+      allowNull: true,
+      primaryKey: false
+    },
+    deviceId: {
+      type: dataTypes.STRING(256),
+      field: 'device_id',
+      allowNull: false,
+      primaryKey: false
+    },
+    tagName: {
+      type: dataTypes.STRING(128),
+      field: 'tag_name',
+      allowNull: false,
+      primaryKey: false
+    },
+    eventType: {
+      type: dataTypes.INTEGER,
+      field: 'event_type',
+      allowNull: false,
+      primaryKey: false
+    },
+    refValue: {
+      type: dataTypes.DOUBLE,
+      field: 'ref_value',
+      allowNull: true,
+      primaryKey: false
+    },
+    refDeviceId: {
+      type: dataTypes.STRING(256),
+      field: 'ref_device_id',
+      allowNull: true,
+      primaryKey: false
+    },
+    refTagName: {
+      type: dataTypes.STRING(128),
+      field: 'ref_tag_name',
+      allowNull: true,
+      primaryKey: false
+    },
+    sampleInterval: {
+      type: dataTypes.INTEGER,
+      field: 'sample_interval',
+      allowNull: false,
+      primaryKey: false
+    },
+    sampleUnit: {
+      type: dataTypes.INTEGER,
+      field: 'sample_unit',
+      allowNull: false,
+      primaryKey: false
+    },
+    sampleAmount: {
+      type: dataTypes.INTEGER,
+      field: 'sample_amount',
+      allowNull: false,
+      primaryKey: false
+    },
+    eventLogRecord: {
+      type: dataTypes.ARRAY(dataTypes.TEXT),
+      field: 'eventlogrecord'
+    }
+  }, {
+    timestamps: false, // remove createAt and updateAt attributes
+    freezeTableName: false // Model tableName will be the same as the model name
+  });
+};

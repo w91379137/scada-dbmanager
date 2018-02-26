@@ -22,7 +22,7 @@ let deviceId = 'test';
 let tagName = 'test';
 
 let eventLogInfo = {
-  "eventName": "string13",
+  "eventName": "string4",
   "scadaId": "string",
   "description": "string",
   "deviceId": "string",
@@ -35,14 +35,8 @@ let eventLogInfo = {
   "sampleUnit": 0,
   "sampleAmount": 0,
   "eventLogRecord": [
-    {
-      "deviceId": "string",
-      "tagName": "string"
-    },
-    {
-      "deviceId": "string1",
-      "tagName": "string1"
-    }
+    {"deviceId": "string4_tset1", "tagName": "string4_tagtest1"},
+    {"deviceId": "string4_tset1", "tagName": "string4_tagtest2"}
   ]
 };
 
@@ -57,8 +51,12 @@ let eventLogInfo = {
 //   });
 // });
 
+let filterObj = {
+  scadaId: 'string',
+  detail: true
+};
 
-eventLogDao.getEventLogList()
+eventLogDao.getEventLogList(filterObj)
 .then((result) => {
   console.log(result);
 })
