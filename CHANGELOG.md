@@ -1,3 +1,17 @@
+# [Unrelease]
+## Fixed
+- 修正insertDiscreteTag新增失敗的問題
+## Changed
+- 改寫create的方式，統一用bulkCreate來做，影響到以下三個function
+    - insertTextTag
+    - insertAlarmAnalogTag
+    - insertAlarmDiscreteTag
+## Others
+- 新增tagDao測試程式 (test/tagDaoTest.js)
+    - insertDiscreteTag
+    - insertTextTag
+    - insertAlarmAnalogTag
+    - insertAlarmDiscreteTag
 # [1.0.25]
 ## Fixed
 - createUser bug
