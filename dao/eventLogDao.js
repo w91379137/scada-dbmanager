@@ -176,14 +176,12 @@ function _updateEventLog (scadaId, prevEventName, reqEventLog, trans) {
   }
 
   return eventLogVo.update(eventLog, { where: { scadaId, eventName: prevEventName }, transaction: trans }).then((res) => {
-    console.log(res);
     if (res[0] === 0) {
       return Promise.reject(Error('Can not find the eventLog which match input scadaId and eventName.'));
     } else if (res[0] === 1) {
       return eventLogRecordVo.destroy({ where: { scadaId, eventName: prevEventName }, transaction: trans });
     }
   }).then((res) => {
-    console.log(res);
     return eventLogRecordVo.bulkCreate(eventLogRecords, {transaction: trans});
   }).then((res) => {
     return Promise.resolve(true);
