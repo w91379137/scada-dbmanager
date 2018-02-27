@@ -30,22 +30,21 @@ function _init (sequelize) {
 
 /**
  * @param {Object} eventLogObj
- * @param {String} eventLogObj.eventName: eventName
- * @param {String} eventLogObj.scadaId: scadaId
- * @param {String} eventLogObj.description: description
- * @param {String} eventLogObj.deviceId: deviceId
- * @param {String} eventLogObj.tagName: tagName
- * @param {Integer} eventLogObj.eventType: eventType
- * @param {Double} eventLogObj.refValue: refValue
- * @param {String} eventLogObj.refDeviceId: refDeviceId
- * @param {String} eventLogObj.refTagName: refTagName
- * @param {Integer} eventLogObj.sampleInterval: sampleInterval
- * @param {Integer} eventLogObj.sampleUnit: sampleUnit
- * @param {Integer} eventLogObj.sampleAmount: sampleAmount
- * @param {Array.<Object>} eventLogObj.eventLogRecord: eventLogRecord
- * @param {String} eventLogObj.eventLogRecord.deviceId: deviceId
- * @param {String} eventLogObj.eventLogRecord.tagName: tagName
- * }
+ * @param {String} eventLogObj.eventName - eventName
+ * @param {String} eventLogObj.scadaId - scadaId
+ * @param {String} eventLogObj.description - description
+ * @param {String} eventLogObj.deviceId - deviceId
+ * @param {String} eventLogObj.tagName - tagName
+ * @param {Integer} eventLogObj.eventType - eventType
+ * @param {Double} eventLogObj.refValue - refValue
+ * @param {String} eventLogObj.refDeviceId - refDeviceId
+ * @param {String} eventLogObj.refTagName - refTagName
+ * @param {Integer} eventLogObj.sampleInterval - sampleInterval
+ * @param {Integer} eventLogObj.sampleUnit - sampleUnit
+ * @param {Integer} eventLogObj.sampleAmount - sampleAmount
+ * @param {Object[]} eventLogObj.eventLogRecord - eventLogRecord
+ * @param {String} eventLogObj.eventLogRecord.deviceId - deviceId
+ * @param {String} eventLogObj.eventLogRecord.tagName - tagName
  */
 
 function _insertEventLog (eventLogObj, trans) {
@@ -91,15 +90,14 @@ function _insertEventLog (eventLogObj, trans) {
 
 /**
  * @param {Object} filterObj
- * @param {Integer} filterObj.offset: starting index
- * @param {Integer} filterObj.limit: data retrived
- * @param {String} filterObj.scadaId: scadaId of event
- * @param {String} filterObj.eventName: eventName of event
- * @param {String} filterObj.sortby: sort properties
- * @param {String} filterObj.order: order asc or not
- * @param {Boolean} filterObj.detail: select id & name only
- * @param {String} filterObj.userName: filter the scadas that userName can access
- *  }
+ * @param {Integer} filterObj.offset - starting index
+ * @param {Integer} filterObj.limit - data retrived
+ * @param {String} filterObj.scadaId - scadaId of event
+ * @param {String} filterObj.eventName - eventName of event
+ * @param {String} filterObj.sortby - sort properties
+ * @param {String} filterObj.order - order asc or not
+ * @param {Boolean} filterObj.detail - select id & name only
+ * @param {String} filterObj.userName - filter the scadas that userName can access
  */
 
 function _getEventLogList (filterObj = {}) {
@@ -159,6 +157,24 @@ function _getEventLogList (filterObj = {}) {
     });
   });
 }
+
+/**
+ * @property {String}  scadaId                                   - scadaId
+ * @property {String}  prevEventName                             - prevEventName
+ * @property {object}  reqEventLog                               - reqEventLog
+ * @property {String}  reqEventLog.eventName                     - reqEventLog.eventName
+ * @property {String}  reqEventLog.description                   - reqEventLog.description
+ * @property {number}  reqEventLog.eventType                     - reqEventLog.eventType
+ * @property {number}  reqEventLog.refValue                      - reqEventLog.refValue
+ * @property {String}  reqEventLog.refDeviceId                   - reqEventLog.refDeviceId
+ * @property {String}  reqEventLog.refTagName                    - reqEventLog.refTagName
+ * @property {number}  reqEventLog.sampleInterval                - reqEventLog.sampleInterval
+ * @property {number}  reqEventLog.sampleUnit                    - reqEventLog.sampleUnit
+ * @property {number}  reqEventLog.sampleAmount                  - reqEventLog.sampleAmount
+ * @property {object[]}  reqEventLog.eventLogRecord              - reqEventLog.eventLogRecord
+ * @property {String}  reqEventLog.eventLogRecord.deviceId       - reqEventLog.eventLogRecord.deviceId
+ * @property {String}  reqEventLog.eventLogRecord.tagName        - reqEventLog.eventLogRecord.tagName
+ */
 
 function _updateEventLog (scadaId, prevEventName, reqEventLog, trans) {
   // eventLog
