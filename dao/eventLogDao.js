@@ -161,8 +161,35 @@ function _getEventLogList (filterObj = {}) {
   });
 }
 
+function _updateEventLog (scadaId, prevEventName, reqEventLog, trans) {
+  // eventLog
+  let eventLog = Object.assign({}, reqEventLog);
+  delete eventLog.eventLogRecord;
+
+  // eventLogRecord
+  let newEventName = reqEventLog.eventName;
+  let eventLogRecords = reqEventLog.eventLogRecord;
+
+  for (let record of eventLogRecords) {
+    record.eventName = newEventName;
+    record.scadaId = scadaId;
+  }
+
+  return eventLogVo.update(eventLog, { where: { scadaId, eventName: prevEventName }, transaction: trans }).then((res) => {
+    console.log(res);
+    return eventLogRecordVo.destroy({ where: { scadaId, eventName: prevEventName }, transaction: trans });
+  }).then((res) => {
+    console.log(res);
+    return eventLogRecordVo.bulkCreate(eventLogRecords, {transaction: trans});
+  }).then((res) => {
+    return Promise.resolve(true);
+  }).catch((err) => {
+    return Promise.reject(err);
+  });
+}
 module.exports = {
   init: _init,
   insertEventLog: _insertEventLog,
-  getEventLogList: _getEventLogList
+  getEventLogList: _getEventLogList,
+  updateEventLog: _updateEventLog
 };

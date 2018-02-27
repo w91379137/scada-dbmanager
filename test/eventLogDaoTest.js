@@ -22,8 +22,8 @@ let deviceId = 'test';
 let tagName = 'test';
 
 let eventLogInfo = {
-  "eventName": "string4",
-  "scadaId": "string",
+  "eventName": "eventName_1",
+  "scadaId": "scadaId_1",
   "description": "string",
   "deviceId": "string",
   "tagName": "string",
@@ -35,8 +35,26 @@ let eventLogInfo = {
   "sampleUnit": 0,
   "sampleAmount": 0,
   "eventLogRecord": [
-    {"deviceId": "string4_tset1", "tagName": "string4_tagtest1"},
-    {"deviceId": "string4_tset1", "tagName": "string4_tagtest2"}
+    {"deviceId": "device_1", "tagName": "tagName_1"},
+    {"deviceId": "device_2", "tagName": "tagName_2"}
+  ]
+};
+
+let updateObj = {
+  "eventName": "updatetest4",
+  "description": "string",
+  "eventType": 0,
+  "refValue": 0,
+  "refDeviceId": "string",
+  "refTagName": "string",
+  "sampleInterval": 0,
+  "sampleUnit": 0,
+  "sampleAmount": 0,
+  "eventLogRecord": [
+    {
+      "tagName": "string",
+      "deviceId":"test2"
+    }
   ]
 };
 
@@ -51,16 +69,32 @@ let eventLogInfo = {
 //   });
 // });
 
-let filterObj = {
-  scadaId: 'string',
-  eventName: 'string1',
-  detail: false
-};
+// let filterObj = {
+//   scadaId: 'string',
+//   eventName: 'string1',
+//   detail: false
+// };
 
-eventLogDao.getEventLogList(filterObj)
-.then((result) => {
-  console.log(result);
-})
-.catch((error) => {
-  console.error(error);
+// eventLogDao.getEventLogList(filterObj)
+// .then((result) => {
+//   console.log(result);
+// })
+// .catch((error) => {
+//   console.error(error);
+// });
+
+// ------------- update ---------------
+let prevScadaId = 'scadaId_1';
+let prevEventName = 'updatetest3';
+
+
+DBManager.conn().transaction().then(function (trans) {
+  return eventLogDao.updateEventLog(prevScadaId, prevEventName, updateObj, trans).then(function (res) {
+    return trans.commit();
+  }).catch(function (err) {
+    if (err) {
+      console.log(err);
+      return trans.rollback();
+    }
+  });
 });
