@@ -17,7 +17,7 @@ var eventLogDao = DBManager.EventLogDao;
 // let scadaDao = DBManager.scadaDao;
 
 let projectId = 'reqwer';
-let scadaId = '71c957bc-b5b1-4e02-8087-b06cc44baf74';
+// let scadaId = '71c957bc-b5b1-4e02-8087-b06cc44baf74';
 let deviceId = 'test';
 let tagName = 'test';
 
@@ -41,7 +41,7 @@ let eventLogInfo = {
 };
 
 let updateObj = {
-  "eventName": "updatetest4",
+  "eventName": "testset",
   "description": "string",
   "eventType": 0,
   "refValue": 0,
@@ -84,12 +84,28 @@ let updateObj = {
 // });
 
 // ------------- update ---------------
-let prevScadaId = 'scadaId_1';
-let prevEventName = 'updatetest3';
+// let prevScadaId = 'scadaId_1';
+// let prevEventName = 'testset';
 
+
+// DBManager.conn().transaction().then(function (trans) {
+//   return eventLogDao.updateEventLog(prevScadaId, prevEventName, updateObj, trans).then(function (res) {
+//     return trans.commit();
+//   }).catch(function (err) {
+//     if (err) {
+//       console.log(err);
+//       return trans.rollback();
+//     }
+//   });
+// });
+
+// -------------------- delete ----------
+
+let scadaId = 'scadartyrtyId_1';
+let eventName = '';
 
 DBManager.conn().transaction().then(function (trans) {
-  return eventLogDao.updateEventLog(prevScadaId, prevEventName, updateObj, trans).then(function (res) {
+  return eventLogDao.deleteEventLog(scadaId, eventName, trans).then(function (res) {
     return trans.commit();
   }).catch(function (err) {
     if (err) {

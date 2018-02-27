@@ -131,7 +131,6 @@ function _getEventLogList (filterObj = {}) {
     sql.distinct();
   }
 
- 
   if (filterObj.userName) {
     // TODO: check user (permission validation)
     // sql.join('scada.user_allow_device', 'UserAllowDevice', squel.expr().and('Scada.proj_id = UserAllowDevice.proj_id').and('Scada.scada_id = UserAllowDevice.scada_id'));
@@ -189,9 +188,26 @@ function _updateEventLog (scadaId, prevEventName, reqEventLog, trans) {
     return Promise.reject(err);
   });
 }
+
+function _deleteEventLog (scadaId, eventName, trans) {
+  let promises = [];
+  promises.push(eventLogVo.destroy({ where: { scadaId, eventName }, transaction: trans }));
+  promises.push(eventLogRecordVo.destroy({ where: { scadaId, eventName }, transaction: trans }));
+  return Promise.all(promises).then((result) => {
+    if (result[0] === 0 && result[1] === 0) {
+      return Promise.reject(Error('No such eventLog or eventLogRecord matched the input scadaId and eventName.'));
+    } else {
+      return Promise.resolve(true);
+    }
+  }).catch((err) => {
+    return Promise.reject(err);
+  });
+}
+
 module.exports = {
   init: _init,
   insertEventLog: _insertEventLog,
   getEventLogList: _getEventLogList,
-  updateEventLog: _updateEventLog
+  updateEventLog: _updateEventLog,
+  deleteEventLog: _deleteEventLog
 };
