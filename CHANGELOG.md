@@ -1,4 +1,4 @@
-# [Unrelease]
+# [1.0.26]
 ## Fixed
 - 修正insertDiscreteTag新增失敗的問題
 - Bug #1717
@@ -14,6 +14,7 @@
     - insertTextTag
     - insertAlarmAnalogTag
     - insertAlarmDiscreteTag
+
 # [1.0.25]
 ## Fixed
 - createUser bug
