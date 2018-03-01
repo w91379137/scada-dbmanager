@@ -15,7 +15,7 @@ function _init (sequelize) {
 }
 
 function _getRoleList () {
-  return roleVo.findAll({}).then((roles) => {
+  return roleVo.findAll({order: ['role_id']}).then((roles) => {
     if (roles.length > 0) {
       roles = roles.map((role) => Object.assign(role.dataValues, {scope: []}));
       return roleScopeVo.findAll({}).then((scopes) => {
