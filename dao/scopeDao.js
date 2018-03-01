@@ -11,7 +11,7 @@ function _init (sequelize) {
 }
 
 function _getScopeList () {
-  return scopeVo.findAll();
+  return scopeVo.findAll({order: ['scope_id']});
 }
 
 function _getScope (scopeId) {
