@@ -29,7 +29,7 @@ function _getAccessRight (filterObj = {}) {
     sql.where('UserAllowDevice.user_id = ?', filterObj.userId);
   } else if (filterObj.userName) {
     sql.join('scada.user_info', 'UserInfo', squel.expr().and('UserInfo.user_id = UserAllowDevice.user_id'))
-    .where('UserInfo.user_name = ?', filterObj.userName);
+    .where('LOWER(UserInfo.user_name) = LOWER(?)', filterObj.userName);
   }
   if (filterObj.projectId) {
     sql.where('UserAllowDevice.proj_id = ?', filterObj.projectId);

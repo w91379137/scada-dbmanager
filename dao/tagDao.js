@@ -225,9 +225,9 @@ function _getTagList (filterObj = {}) {
   }
   sql.distinct();
   if (filterObj.userName) {
-    sql.join('scada.user_allow_device', 'UserAllowDevice', squel.expr().and('Tag.scada_id = UserAllowDevice.scada_id').and('Tag.device_id = UserAllowDevice.device_id'));
-    sql.join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id'));
-    sql.where('Userinfo.user_name = ? ', filterObj.userName);
+    sql.join('scada.user_allow_device', 'UserAllowDevice', squel.expr().and('Tag.scada_id = UserAllowDevice.scada_id').and('Tag.device_id = UserAllowDevice.device_id'))
+    .join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id'))
+    .where('LOWER(UserInfo.user_name) = LOWER(?)', filterObj.userName);
   }
   for (let idx in tagVo.attributes) {
     let key = tagVo.attributes[idx];
@@ -277,9 +277,9 @@ function _getTagListByProjectId (projectId, filterObj = {}) {
   sql.distinct();
   sql.join('scada.scada_list', 'Scada', squel.expr().and('Tag.scada_id = Scada.scada_id'));
   if (filterObj.userName) {
-    sql.join('scada.user_allow_device', 'UserAllowDevice', squel.expr().and('Device.scada_id = UserAllowDevice.scada_id').and('Device.device_id = UserAllowDevice.device_id'));
-    sql.join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id'));
-    sql.where('Userinfo.user_name = ? ', filterObj.userName);
+    sql.join('scada.user_allow_device', 'UserAllowDevice', squel.expr().and('Device.scada_id = UserAllowDevice.scada_id').and('Device.device_id = UserAllowDevice.device_id'))
+    .join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id'))
+    .where('LOWER(UserInfo.user_name) = LOWER(?)', filterObj.userName);
   }
   sql.where('Scada.proj_id = ? ', projectId);
   for (let idx in tagVo.attributes) {
@@ -330,9 +330,9 @@ function _getTagListByScadaId (scadaId, filterObj = {}) {
   sql.distinct();
   sql.join('scada.scada_list', 'Scada', squel.expr().and('Tag.scada_id = Scada.scada_id'));
   if (filterObj.userName) {
-    sql.join('scada.user_allow_device', 'UserAllowDevice', squel.expr().and('Tag.scada_id = UserAllowDevice.scada_id').and('Tag.device_id = UserAllowDevice.device_id'));
-    sql.join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id'));
-    sql.where('Userinfo.user_name = ? ', filterObj.userName);
+    sql.join('scada.user_allow_device', 'UserAllowDevice', squel.expr().and('Tag.scada_id = UserAllowDevice.scada_id').and('Tag.device_id = UserAllowDevice.device_id'))
+    .join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id'))
+    .where('LOWER(UserInfo.user_name) = LOWER(?)', filterObj.userName);
   }
   sql.where('Tag.scada_id = ? ', scadaId);
   for (let idx in tagVo.attributes) {
@@ -384,9 +384,9 @@ function _getTagListByDeviceId (scadaId, deviceId, filterObj = {}) {
   sql.distinct();
   sql.join('scada.scada_list', 'Scada', squel.expr().and('Tag.scada_id = Scada.scada_id'));
   if (filterObj.userName) {
-    sql.join('scada.user_allow_device', 'UserAllowDevice', squel.expr().and('Tag.scada_id = UserAllowDevice.scada_id').and('Tag.device_id = UserAllowDevice.device_id'));
-    sql.join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id'));
-    sql.where('Userinfo.user_name = ? ', filterObj.userName);
+    sql.join('scada.user_allow_device', 'UserAllowDevice', squel.expr().and('Tag.scada_id = UserAllowDevice.scada_id').and('Tag.device_id = UserAllowDevice.device_id'))
+    .join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id'))
+    .where('LOWER(UserInfo.user_name) = LOWER(?)', filterObj.userName);
   }
   sql.where('Tag.scada_id = ? AND Tag.device_id = ?', scadaId, deviceId);
   for (let idx in tagVo.attributes) {

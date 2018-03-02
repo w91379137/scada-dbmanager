@@ -89,7 +89,7 @@ function _getUserByName (userName) {
   let sql = squel.select().from('scada.user_info', 'UserInfo')
   .left_join('scada.user_scope', 'UserScope', squel.expr().and('UserInfo.user_id = UserScope.user_id'))
   .left_join('scada.user_info', 'CreateUserInfo', squel.expr().and('UserInfo.create_user = CreateUserInfo.user_id'))
-  .where('UserInfo.user_name = ?', userName);
+  .where('LOWER(UserInfo.user_name) = LOWER(?)', userName);
 
   for (let idx in userVo.attributes) {
     sql.field('UserInfo.' + userVo.attributes[idx].field);
@@ -152,11 +152,11 @@ function _insertUserScopeById (userId, scopeList, trans) {
 }
 
 function _updateUserByName (userName, userObj, trans) {
-  return userVo.update(userObj, { where: {userName}, transaction: trans });
+  return userVo.update(userObj, { where: _sequelize.where(_sequelize.fn('lower', _sequelize.col('user_name')), userName.toLowerCase()), transaction: trans });
 }
 
 function _updateUserScopeByName (userName, scopeList, trans) {
-  return userVo.findOne({where: {userName}}).then(function (user) {
+  return userVo.findOne({where: _sequelize.where(_sequelize.fn('lower', _sequelize.col('user_name')), userName.toLowerCase())}).then(function (user) {
     let array = [];
     for (let idx = 0; idx < scopeList.length; idx++) {
       array.push({userId: user.userId, scopeId: scopeList[idx]});
@@ -201,10 +201,6 @@ module.exports = {
   getUserById: _getUserById,
   getUserByName: _getUserByName,
   getUserScopeById: _getUserScopeById,
-  /* getWholeByUserName: _getWholeByUserName,
-  getProjectByUserName: _getProjectByUserName,
-  getScadaByUserName: _getScadaByUserName,
-  getDeviceByUserName: _getDeviceByUserName, */
   insertUser: _insertUser,
   insertUserScopeById: _insertUserScopeById,
   updateUserByName: _updateUserByName,

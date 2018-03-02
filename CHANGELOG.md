@@ -1,13 +1,19 @@
+# [Unrelease]
+## Fixed
+- userName lower and upper check
+
 # [1.0.26]
 ## Fixed
 - 修正insertDiscreteTag新增失敗的問題
 - Bug #1717
     - Role Setting页面中，建议不同Role Id的显示顺序固定（目前是修改description后，显示顺序会改变）
+
 ## Changed
 - 改寫create的方式，統一用bulkCreate來做，影響到以下三個function
     - insertTextTag
     - insertAlarmAnalogTag
     - insertAlarmDiscreteTag
+    
 ## Others
 - 新增tagDao測試程式 (test/tagDaoTest.js)
     - insertDiscreteTag

@@ -54,9 +54,9 @@ function _getScadaList (filterObj = {}) {
   }
   sql.distinct();
   if (filterObj.userName) {
-    sql.join('scada.user_allow_device', 'UserAllowDevice', squel.expr().and('Scada.proj_id = UserAllowDevice.proj_id').and('Scada.scada_id = UserAllowDevice.scada_id'));
-    sql.join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id'));
-    sql.where('Userinfo.user_name = ? ', filterObj.userName);
+    sql.join('scada.user_allow_device', 'UserAllowDevice', squel.expr().and('Scada.proj_id = UserAllowDevice.proj_id').and('Scada.scada_id = UserAllowDevice.scada_id'))
+    .join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id'))
+    .where('LOWER(UserInfo.user_name) = LOWER(?)', filterObj.userName);
   }
   for (let idx in scadaVo.attributes) {
     let key = scadaVo.attributes[idx];
@@ -106,9 +106,9 @@ function _getScadaListByProjectId (projectId, filterObj = {}) {
   }
   sql.distinct();
   if (filterObj.userName) {
-    sql.join('scada.user_allow_device', 'UserAllowDevice', squel.expr().and('Scada.proj_id = UserAllowDevice.proj_id').and('Scada.scada_id = UserAllowDevice.scada_id'));
-    sql.join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id'));
-    sql.where('Userinfo.user_name = ?', filterObj.userName);
+    sql.join('scada.user_allow_device', 'UserAllowDevice', squel.expr().and('Scada.proj_id = UserAllowDevice.proj_id').and('Scada.scada_id = UserAllowDevice.scada_id'))
+    .join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id'))
+    .where('LOWER(UserInfo.user_name) = LOWER(?)', filterObj.userName);
   }
   sql.where('Scada.proj_id = ? ', projectId);
 
@@ -212,8 +212,9 @@ function _checkScadaRightByUserName (userName, filterObj = {}) {
   sql.field('SUB.userId', 'userId');
   sql.distinct();
   sql.left_join(squel.select().from('scada.user_allow_device', 'UserAllowDevice')
-  .field('UserAllowDevice.user_id', 'userId').field('UserAllowDevice.scada_id', 'scadaId')
-  .join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id').and('Userinfo.user_name = ?', userName)), 'SUB', 'SUB.scadaId = Scada.scada_id');
+  .field('UserAllowDevice.user_id', 'userId')
+  .field('UserAllowDevice.scada_id', 'scadaId')
+  .join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id').and('LOWER(UserInfo.user_name) = LOWER(?)', userName)), 'SUB', 'SUB.scadaId = Scada.scada_id');
   /* if (filterObj.projectId) {
     sql.where(('UserAllowDevice.proj_id = ?', filterObj.projectId));
   }

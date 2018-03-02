@@ -51,9 +51,9 @@ function _getProjectList (filterObj = {}) {
   }
   sql.distinct();
   if (filterObj.userName) {
-    sql.join('scada.user_allow_device', 'UserAllowDevice', squel.expr().and('Project.proj_id = UserAllowDevice.proj_id'));
-    sql.join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id'));
-    sql.where('Userinfo.user_name = ?', filterObj.userName);
+    sql.join('scada.user_allow_device', 'UserAllowDevice', squel.expr().and('Project.proj_id = UserAllowDevice.proj_id'))
+    .join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id'))
+    .where('LOWER(UserInfo.user_name) = LOWER(?)', filterObj.userName);
   }
   for (let idx in projectVo.attributes) {
     let key = projectVo.attributes[idx];
@@ -121,7 +121,7 @@ function _checkProjectRightByUserName (userName, filterObj = {}) {
   sql.distinct();
   sql.left_join(squel.select().from('scada.user_allow_device', 'UserAllowDevice')
   .field('UserAllowDevice.user_id', 'userId').field('UserAllowDevice.proj_id', 'projectId')
-  .join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id').and('Userinfo.user_name = ?', userName)), 'SUB', 'SUB.projectId = Project.proj_id');
+  .join('scada.user_info', 'UserInfo', squel.expr().and('UserAllowDevice.user_id = UserInfo.user_id').and('LOWER(UserInfo.user_name) = LOWER(?)', userName)), 'SUB', 'SUB.projectId = Project.proj_id');
   /* if (filterObj.projectId) {
     sql.where(('UserAllowDevice.proj_id = ?', filterObj.projectId));
   }
