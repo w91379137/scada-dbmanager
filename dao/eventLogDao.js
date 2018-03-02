@@ -188,16 +188,20 @@ function _updateEventLog (scadaId, prevEventName, reqEventLog, trans) {
   // eventLogRecord
   let newEventName = reqEventLog.eventName;
 
-  let doUpdateRecord = false;
+  let doReInsertRecord = false;
   let eventLogRecords = [];
 
   if (Array.isArray(reqEventLog.eventLogRecord)) {
-    doUpdateRecord = true;
+    doReInsertRecord = true;
 
     eventLogRecords = reqEventLog.eventLogRecord;
 
     for (let record of eventLogRecords) {
-      record.eventName = newEventName;
+      if (newEventName) {
+        record.eventName = newEventName;
+      } else {
+        record.eventName = prevEventName;
+      }
       record.scadaId = scadaId;
     }
   }
@@ -205,13 +209,15 @@ function _updateEventLog (scadaId, prevEventName, reqEventLog, trans) {
   return eventLogVo.update(eventLog, { where: { scadaId, eventName: prevEventName }, transaction: trans }).then((res) => {
     if (res[0] === 0) {
       return Promise.reject(Error('Can not find the eventLog which match input scadaId and eventName.'));
-    } else if (res[0] === 1 && doUpdateRecord) {
+    } else if (res[0] === 1 && doReInsertRecord) { // do re insert records
       return eventLogRecordVo.destroy({ where: { scadaId, eventName: prevEventName }, transaction: trans });
+    } else if (res[0] === 1 && newEventName) { // only update prev records's event name
+      return eventLogRecordVo.update({ eventName: newEventName }, { where: { scadaId, eventName: prevEventName } });
     } else {
       return Promise.resolve(true);
     }
   }).then((res) => {
-    if (doUpdateRecord) {
+    if (doReInsertRecord) {
       return eventLogRecordVo.bulkCreate(eventLogRecords, {transaction: trans});
     } else {
       return Promise.resolve(true);
