@@ -55,11 +55,15 @@ function _insertEventLog (eventLogObj, trans) {
   let eventLogs = Object.assign({}, eventLogObj);
   delete eventLogs.eventLogRecord;
 
-  let eventLogRecords = eventLogObj.eventLogRecord;
+  let eventLogRecords = [];
 
-  for (let record of eventLogRecords) {
-    record.eventName = eventName;
-    record.scadaId = scadaId;
+  if (Array.isArray(eventLogObj.eventLogRecord)) {
+    eventLogRecords = eventLogObj.eventLogRecord;
+
+    for (let record of eventLogRecords) {
+      record.eventName = eventName;
+      record.scadaId = scadaId;
+    }
   }
 
   // create EventLog and EventLogRecord

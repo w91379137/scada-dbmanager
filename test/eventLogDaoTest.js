@@ -21,6 +21,19 @@ let projectId = 'reqwer';
 let deviceId = 'test';
 let tagName = 'test';
 
+let eventLogNoRecord = {
+  "eventName": "royTest2",
+  "scadaId": "royTest",
+  "description": "royTest",
+  "deviceId": "royTest",
+  "tagName": "royTest",
+  "eventType": 0,
+  "refValue": 0,
+  "sampleInterval": 0,
+  "sampleUnit": 0,
+  "sampleAmount": 0
+};
+
 let eventLogInfo = {
   "eventName": "eventName_1",
   "scadaId": "scadaId_1",
@@ -58,16 +71,17 @@ let updateObj = {
   ]
 };
 
-// DBManager.conn().transaction().then(function (trans) {
-//   return eventLogDao.insertEventLog(eventLogInfo, trans).then(function (res) {
-//     return trans.commit();
-//   }).catch(function (err) {
-//     if (err) {
-//       console.log(err);
-//       return trans.rollback();
-//     }
-//   });
-// });
+// ---------------------- insert ------------------------
+DBManager.conn().transaction().then(function (trans) {
+  return eventLogDao.insertEventLog(eventLogNoRecord, trans).then(function (res) {
+    return trans.commit();
+  }).catch(function (err) {
+    if (err) {
+      console.log(err);
+      return trans.rollback();
+    }
+  });
+});
 
 // let filterObj = {
 //   scadaId: 'string',
@@ -101,16 +115,16 @@ let updateObj = {
 
 // -------------------- delete ----------
 
-let scadaId = 'scadartyrtyId_1';
-let eventName = '';
+// let scadaId = 'scadartyrtyId_1';
+// let eventName = '';
 
-DBManager.conn().transaction().then(function (trans) {
-  return eventLogDao.deleteEventLog(scadaId, eventName, trans).then(function (res) {
-    return trans.commit();
-  }).catch(function (err) {
-    if (err) {
-      console.log(err);
-      return trans.rollback();
-    }
-  });
-});
+// DBManager.conn().transaction().then(function (trans) {
+//   return eventLogDao.deleteEventLog(scadaId, eventName, trans).then(function (res) {
+//     return trans.commit();
+//   }).catch(function (err) {
+//     if (err) {
+//       console.log(err);
+//       return trans.rollback();
+//     }
+//   });
+// });
