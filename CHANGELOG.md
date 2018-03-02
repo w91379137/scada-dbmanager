@@ -1,4 +1,4 @@
-# [Unrelease]
+# [1.0.27] - 2018-03-02
 ## Fixed
 - userName lower and upper check
 
@@ -13,7 +13,7 @@
     - insertTextTag
     - insertAlarmAnalogTag
     - insertAlarmDiscreteTag
-    
+
 ## Others
 - 新增tagDao測試程式 (test/tagDaoTest.js)
     - insertDiscreteTag
