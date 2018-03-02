@@ -187,21 +187,35 @@ function _updateEventLog (scadaId, prevEventName, reqEventLog, trans) {
 
   // eventLogRecord
   let newEventName = reqEventLog.eventName;
-  let eventLogRecords = reqEventLog.eventLogRecord;
 
-  for (let record of eventLogRecords) {
-    record.eventName = newEventName;
-    record.scadaId = scadaId;
+  let doUpdateRecord = false;
+  let eventLogRecords = [];
+
+  if (Array.isArray(reqEventLog.eventLogRecord)) {
+    doUpdateRecord = true;
+
+    eventLogRecords = reqEventLog.eventLogRecord;
+
+    for (let record of eventLogRecords) {
+      record.eventName = newEventName;
+      record.scadaId = scadaId;
+    }
   }
 
   return eventLogVo.update(eventLog, { where: { scadaId, eventName: prevEventName }, transaction: trans }).then((res) => {
     if (res[0] === 0) {
       return Promise.reject(Error('Can not find the eventLog which match input scadaId and eventName.'));
-    } else if (res[0] === 1) {
+    } else if (res[0] === 1 && doUpdateRecord) {
       return eventLogRecordVo.destroy({ where: { scadaId, eventName: prevEventName }, transaction: trans });
+    } else {
+      return Promise.resolve(true);
     }
   }).then((res) => {
-    return eventLogRecordVo.bulkCreate(eventLogRecords, {transaction: trans});
+    if (doUpdateRecord) {
+      return eventLogRecordVo.bulkCreate(eventLogRecords, {transaction: trans});
+    } else {
+      return Promise.resolve(true);
+    }
   }).then((res) => {
     return Promise.resolve(true);
   }).catch((err) => {
