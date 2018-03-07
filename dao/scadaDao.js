@@ -49,6 +49,8 @@ function _getScadaList (filterObj = {}) {
     for (let idx in scadaVo.attributes) {
       sql.field('Scada.' + scadaVo.attributes[idx].field, idx);
     }
+    sql.field('ScadaParam.param_value', 'credentialKey');
+    sql.left_join('scada.scada_parameters', 'ScadaParam', squel.expr().and('Scada.scada_id = ScadaParam.scada_id').and('ScadaParam.param_name = ?', 'DCCS_SERVICE_KEY_NAME'));
   } else {
     sql.field('Scada.proj_id', 'projectId');
     sql.field('Scada.scada_id', 'scadaId');
@@ -69,7 +71,14 @@ function _getScadaList (filterObj = {}) {
   sql.order(sortby, order);
   return new Promise((resolve, reject) => {
     _sequelize.query(sql.toString(), { type: _sequelize.QueryTypes.SELECT, model: scadaVo }).then((raws) => {
-      resolve({count: raws.length, rows: raws.slice(offset, limit ? limit + offset : raws.length)});
+      let rows = raws.slice(offset, limit ? limit + offset : raws.length);
+      rows = rows.map((r) => r.dataValues);
+      rows = rows.map((r) => {
+        r.credentialKey = r.credentialkey;
+        delete r.credentialkey;
+        return r;
+      });
+      resolve({count: raws.length, rows});
     }).catch((err) => {
       reject(err);
     });
@@ -101,6 +110,8 @@ function _getScadaListByProjectId (projectId, filterObj = {}) {
     for (let idx in scadaVo.attributes) {
       sql.field('Scada.' + scadaVo.attributes[idx].field, idx);
     }
+    sql.field('ScadaParam.param_value', 'credentialKey');
+    sql.left_join('scada.scada_parameters', 'ScadaParam', squel.expr().and('Scada.scada_id = ScadaParam.scada_id').and('ScadaParam.param_name = ?', 'DCCS_SERVICE_KEY_NAME'));
   } else {
     sql.field('Scada.proj_id', 'projectId');
     sql.field('Scada.scada_id', 'scadaId');
@@ -123,7 +134,14 @@ function _getScadaListByProjectId (projectId, filterObj = {}) {
   sql.order(sortby, order);
   return new Promise((resolve, reject) => {
     _sequelize.query(sql.toString(), { type: _sequelize.QueryTypes.SELECT, model: scadaVo }).then((raws) => {
-      resolve({count: raws.length, rows: raws.slice(offset, limit ? limit + offset : raws.length)});
+      let rows = raws.slice(offset, limit ? limit + offset : raws.length);
+      rows = rows.map((r) => r.dataValues);
+      rows = rows.map((r) => {
+        r.credentialKey = r.credentialkey;
+        delete r.credentialkey;
+        return r;
+      });
+      resolve({count: raws.length, rows});
     }).catch((err) => {
       reject(err);
     });
@@ -167,7 +185,7 @@ function _deleteScada (scadaId, trans) {
       let promises = [];
       promises.push(scadaVo.destroy({ where: { scadaId }, transaction: trans }));
       promises.push(scadaParamsVo.destroy({ where: { scadaId }, transaction: trans }));
-      promises.push(deviceVo.destroy({ where: { scadaId }, transaction: trans }));
+      promises.push(deviceVo.destroy({ where: { scadaId }, trsansaction: trans }));
       promises.push(tagDao.deleteTagListByScadaId(scadaId, trans));
       promises.push(userAllowDeviceVo.destroy({ where: { scadaId }, transaction: trans }));
       return Promise.all(promises).then((result) => {
